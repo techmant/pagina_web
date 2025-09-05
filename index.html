@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TechmanTS – Streaming y Servicios Digitales</title>
+  <meta name="description" content="TechmanTS: venta de cuentas de entretenimiento y servicios digitales. Netflix, Max (HBO), Disney+, Prime Video, Crunchyroll, YouTube, Spotify, FlujoTV y más." />
+  <meta name="theme-color" content="#0d0d0d" />
+  <!-- ✅ Favicon -->
+  <link rel="icon" href="https://i.imgur.com/vIwPovT.png" sizes="any">
+  <link rel="icon" href="https://i.imgur.com/vIwPovT.png" sizes="192x192">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* =============== Base / Reset =============== */
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      --bg:#0d0d0d; --text:#fff; --muted:#b8c0cc; --primary:#00d4ff; --accent:#ffd700;
+      --card:#111318; --card2:#0b0e13; --border:#1f2430; --ok:#22c55e; --warn:#fbbf24; --err:#ef4444;
+      --radius:18px; --radius-sm:12px; --shadow:0 10px 35px rgba(0,0,0,.35);
+      --maxw:1200px;
+    }
+    html,body{height:100%;}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+
+    /* =============== Layout =============== */
+    header{position:fixed;inset-inline:0;top:0;z-index:50;background:linear-gradient(180deg,rgba(13,13,13,.82),rgba(13,13,13,.35),transparent);backdrop-filter:saturate(150%) blur(6px)}
+    .nav{max-width:var(--maxw);margin:auto;display:flex;align-items:center;gap:12px;padding:14px 18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
+    .brand .dot{width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 30% 30%,var(--accent),#ff6,transparent 70%) box-shadow(var(--shadow))}
+    .spacer{flex:1}
+    .nav a.btn, .nav button.btn{white-space:nowrap}
+
+    main{display:block}
+    section.hero{position:relative;height:100dvh;min-height:100svh;display:grid;place-items:center;isolation:isolate;overflow:hidden}
+    section.hero .bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;transform-origin:center;z-index:0;will-change:transform,opacity;backface-visibility:hidden;transform:scale(1.2);opacity:1}
+    section.hero .shade{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.25))}
+    section.hero .content{position:relative;z-index:2;text-align:center;text-shadow:0 6px 20px rgba(0,0,0,.6)}
+
+    /* Animated Title */
+    .disney-text{position:relative;display:flex;justify-content:center;font-size:clamp(2.2rem,7.5vw,5rem);font-weight:900;text-transform:uppercase;white-space:nowrap;letter-spacing:1px;margin-bottom:10px}
+    .disney-text span{opacity:0;text-shadow:0 0 .3vw #fff,0 0 .6vw var(--accent),0 0 1vw var(--accent);animation:appear 3s infinite}
+    @keyframes appear{0%{opacity:0;transform:translateY(-1.5vw)}20%{opacity:1;transform:translateY(0)}60%{opacity:1}80%{opacity:.5}100%{opacity:0}}
+    .disney-text span:nth-child(1){animation-delay:0s}.disney-text span:nth-child(2){animation-delay:.25s}.disney-text span:nth-child(3){animation-delay:.5s}.disney-text span:nth-child(4){animation-delay:.75s}.disney-text span:nth-child(5){animation-delay:1s}.disney-text span:nth-child(6){animation-delay:1.25s}.disney-text span:nth-child(7){animation-delay:1.5s}.disney-text span:nth-child(8){animation-delay:1.75s}.disney-text span:nth-child(9){animation-delay:2s}
+
+    .tagline{font-size:clamp(1.05rem,3.6vw,1.3rem);line-height:1.55;max-width:900px;margin:6px auto 0;padding:0 16px}
+    .dynamic{color:var(--primary);font-weight:800;animation:glow 3s ease-in-out infinite}
+    @keyframes glow{0%{text-shadow:0 0 6px rgba(0,212,255,.35)}50%{text-shadow:0 0 20px rgba(0,212,255,.8),0 0 30px rgba(255,200,0,.55)}100%{text-shadow:0 0 6px rgba(0,212,255,.35)}}
+
+    .hero-logos{position:relative;width:min(95vw,540px);margin:22px auto 0;height:min(58vh,300px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .logo-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateX(-120%) scale(.75);width:78%;height:78%;max-width:260px;max-height:240px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);opacity:0}
+    .logo-card img{width:85%;height:auto;max-height:120px;object-fit:contain}
+    @keyframes slideAndScale{0%{transform:translate(-50%,-50%) translateX(-120%) scale(.75);opacity:0}50%{transform:translate(-50%,-50%) translateX(0) scale(1.08);opacity:1;z-index:10}100%{transform:translate(-50%,-50%) translateX(120%) scale(.75);opacity:0;z-index:1}}
+    .logo-card:nth-child(1){animation:slideAndScale 8s ease-in-out infinite}
+    .logo-card:nth-child(2){animation:slideAndScale 8s ease-in-out infinite 2s}
+    .logo-card:nth-child(3){animation:slideAndScale 8s ease-in-out infinite 4s}
+    .logo-card:nth-child(4){animation:slideAndScale 8s ease-in-out infinite 6s}
+
+    /* =============== Grid de Servicios =============== */
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:36px 18px}
+    .h-section{font-size:clamp(1.2rem,3.8vw,1.6rem);opacity:.9;margin:6px 0 18px;padding-inline:2px}
+    .grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
+    .col-12{grid-column:span 12}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    .col-3{grid-column:span 3}
+    @media(max-width:1024px){.col-3{grid-column:span 4}}
+    @media(max-width:768px){.col-4{grid-column:span 6}.col-3{grid-column:span 6}}
+    @media(max-width:520px){.col-6{grid-column:span 12}.col-4{grid-column:span 12}.col-3{grid-column:span 12}}
+
+    .card{position:relative;border-radius:var(--radius);overflow:hidden;background:linear-gradient(180deg,#0f1220,#090b12);border:1px solid var(--border);box-shadow:var(--shadow);min-height:220px;display:flex;flex-direction:column}
+    .card .cover{position:relative;aspect-ratio:16/9;background:#0b0e13;display:grid;place-items:center}
+    .card .cover img{width:80%;height:80%;object-fit:contain;filter:drop-shadow(0 8px 22px rgba(0,0,0,.55))}
+    .badge{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px);font-size:.72rem;padding:.25rem .55rem;border-radius:999px}
+    .card .body{padding:14px 14px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .title{font-weight:800;letter-spacing:.3px}
+    .muted{color:var(--muted);font-size:.9rem}
+
+    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--primary),#0ef);border:0;color:#001018;font-weight:800;padding:10px 14px;border-radius:999px;cursor:pointer;transition:transform .15s ease, filter .2s ease;box-shadow:0 10px 20px rgba(0,212,255,.25)}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary{background:linear-gradient(135deg,#232a37,#121720);color:#e8eef6;box-shadow:none;border:1px solid var(--border)}
+    .btn.ghost{background:transparent;border:1px solid var(--border);color:#e6edf7}
+    .btn:disabled{filter:grayscale(.8);opacity:.6;cursor:not-allowed}
+
+    /* =============== Página de Planes (SPA) =============== */
+    #view-home{display:block}
+    #view-planes{display:none}
+    .hero-mini{position:relative;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6)), var(--hero-img);background-size:cover;background-position:center;padding:96px 18px 24px}
+    .hero-mini .wrap{display:flex;align-items:flex-end;gap:14px}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:.35rem .7rem;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);backdrop-filter:blur(4px);font-size:.9rem}
+
+    .plans{display:grid;gap:18px;grid-template-columns:repeat(12,1fr);padding:22px 0}
+    .plan{grid-column:span 4;background:linear-gradient(180deg,#0f1220,#090b12);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .plan .head{padding:18px;border-bottom:1px solid var(--border)}
+    .plan h3{margin:0;font-size:1.1rem}
+    .price{font-size:2rem;font-weight:900;margin-top:4px}
+    .plan .feat{padding:16px 18px;display:flex;flex-direction:column;gap:8px;color:var(--muted)}
+    .plan .actions{padding:16px 18px;display:flex;gap:10px;flex-wrap:wrap}
+    @media(max-width:1024px){.plan{grid-column:span 6}}
+    @media(max-width:640px){.plan{grid-column:span 12}}
+
+    footer{border-top:1px solid var(--border);background:#0b0d11;color:#a9b3c2}
+    footer .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+
+    /* Hide scrollbars */
+    *{scrollbar-width:none}
+    *::-webkit-scrollbar{display:none}
+
+    /* Carrito Modal */
+    #cartModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,.8);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    #cartModal.show {
+      display: flex;
+    }
+    #cartModal .content {
+      background: #0d0d0d;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 500px;
+      color: #fff;
+      box-shadow: 0 20px 40px rgba(0,0,0,.5);
+    }
+    #cartItems {
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 16px 0;
+      border-top: 1px solid #333;
+      padding: 12px 0;
+    }
+    #cartItems div {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      font-size: 0.95rem;
+    }
+    #totalPrice {
+      font-size: 1.3rem;
+      color: #ffd700;
+      font-weight: 800;
+    }
+    #cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--accent);
+      color: #000;
+      font-size: 10px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Notificación moderna */
+    #notification {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #00d4ff, #007bff);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.6);
+      z-index: 9999;
+      font-size: 1rem;
+      max-width: 300px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all .3s ease;
+      font-weight: 600;
+    }
+    #notification.success {
+      background: linear-gradient(135deg, #00d4ff, #007bff);
+    }
+    #notification.error {
+      background: linear-gradient(135deg, #ef4444, #fbbf24);
+    }
+    #notification-icon {
+      margin-bottom: 8px;
+      font-size: 1.3rem;
+    }
+    #notification-text {
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header con carrito -->
+  <header>
+    <nav class="nav">
+      <div class="brand" onclick="goHome()" style="cursor:pointer">
+        <div class="dot"></div>
+        <img src="https://i.imgur.com/vIwPovT.png" alt="Logo TechmanTS" style="width:24px;height:24px;vertical-align:middle;margin-right:8px;" />
+        <div>TechmanTS</div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn ghost" onclick="goHome()">Inicio</button>
+      <!-- Botón de carrito en el menú -->
+      <button class="btn ghost" onclick="openCart()" style="position:relative;">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-badge">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ====================== VISTA: HOME ====================== -->
+  <main id="view-home">
+    <section class="hero">
+      <div class="bg" style="background-image:url('https://i.imgur.com/Y8zRybi.png')"></div>
+      <div class="shade"></div>
+      <div class="content">
+        <div class="disney-text" aria-label="TechmanTS">
+          <span>T</span><span>e</span><span>c</span><span>h</span><span>m</span><span>a</span><span>n</span><span>T</span><span>S</span>
+        </div>
+        <p class="tagline">Tu tienda online ofrece <span class="dynamic" id="platform">Netflix</span> y más cuentas de entretenimiento para disfrutar en familia.</p>
+      </div>
+    </section>
+
+    <section class="hero" style="height:92dvh;min-height:92svh">
+      <div class="bg" style="background-image:url('https://i.imgur.com/AvHvVJh.jpeg')"></div>
+      <div class="shade"></div>
+      <div class="content">
+        <div class="hero-logos">
+          <div class="logo-card"><img src="https://i.imgur.com/GUbmpgD.png" alt="Netflix"/></div>
+          <div class="logo-card"><img src="https://i.imgur.com/1Qb4d4q.png" alt="Prime Video"/></div>
+          <div class="logo-card"><img src="https://i.imgur.com/lSFofbO.png" alt="Disney+"/></div>
+          <div class="logo-card"><img src="https://i.imgur.com/YmDnl46.png" alt="Crunchyroll"/></div>
+        </div>
+        <p class="muted" style="max-width:800px;margin:12px auto 0;padding:0 16px">Plataformas originales con diferentes planes y duraciones. Paga fácil y recibe soporte rápido.</p>
+      </div>
+    </section>
+
+    <section id="servicios" class="wrap">
+      <h2 class="h-section">Servicios disponibles</h2>
+      <div id="services-grid" class="grid"></div>
+    </section>
+
+    
+
+<!-- Carrusel de Testimonios - Desplazamiento automático (sin parpadeo) -->
+<section style="max-width:1200px; margin:60px auto 40px; padding:20px; text-align:center;">
+  <h2 style="font-size:1.8rem; color:#fff; margin-bottom:30px;">Testimonios de nuestros clientes</h2>
+
+  <!-- Carrusel -->
+  <div id="testimonial-slider" 
+       style="position:relative; overflow:hidden; height:300px; background:#0d0d0d; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #1a1a1a;"
+       onmouseenter="this.style.animationPlayState='paused'"
+       onmouseleave="this.style.animationPlayState='running'">
+    
+    <!-- Track animado -->
+    <div id="testimonial-track" 
+         style="display:flex; gap:20px; padding:20px; animation: slideLeft 24s linear infinite;">
+      
+      <!-- Testimonios repetidos para bucle continuo -->
+      <!-- Testimonio 1 -->
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Daniel" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Daniel</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy satisfactorio y a las órdenes del cliente.</p>
+      </div>
+
+      <!-- Testimonio 2 -->
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Edis" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Edis</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Buen servicio 👍👍👍</p>
+      </div>
+
+      <!-- Testimonio 3 -->
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Andrea López" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Andrea López</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy buena 🤝</p>
+      </div>
+
+      <!-- Testimonio 4 -->
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mera" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Mera</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy bien y muy amable.</p>
+      </div>
+
+      <!-- Testimonio 5 -->
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Stalin" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Stalin</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy buen servicio muy recomendable.</p>
+      </div>
+
+      <!-- Testimonio 6 -->
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mónica Valverde" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Mónica Valverde</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 17, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">El servicio bueno 😊</p>
+      </div>
+
+      <!-- Repetición para bucle suave -->
+      <!-- (Copia los mismos 6 testimonios de nuevo para evitar vacíos durante el scroll) -->
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Daniel" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Daniel</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy satisfactorio y a las órdenes del cliente.</p>
+      </div>
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Edis" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Edis</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Buen servicio 👍👍👍</p>
+      </div>
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Andrea López" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Andrea López</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy buena 🤝</p>
+      </div>
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mera" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Mera</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy bien y muy amable.</p>
+      </div>
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Stalin" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Stalin</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">Muy buen servicio muy recomendable.</p>
+      </div>
+      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mónica Valverde" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+          <div>
+            <strong>Mónica Valverde</strong>
+            <div style="font-size:0.75rem; color:#b8c0cc;">January 17, 2024</div>
+          </div>
+        </div>
+        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+        <p style="font-size:0.95rem; line-height:1.5;">El servicio bueno 😊</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Font Awesome (si no lo tienes cargado arriba) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- Animación CSS -->
+<style>
+  @keyframes slideLeft {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  /* Efecto de neón */
+  .testimonial-card:hover {
+    box-shadow: 0 0 30px rgba(0,212,255,0.8) !important;
+    transform: scale(1.02);
+    border: 2px solid #00d4ff;
+  }
+</style>
+
+
+<footer>
+      <div class="wrap">
+        <div>© <span id="y"></span> TechmanTS. Todos los derechos reservados.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="btn secondary" href="#" onclick="scrollToTop();return false;">Volver arriba</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+
+  <!-- ====================== VISTA: PLANES (SPA) ====================== -->
+  <main id="view-planes" aria-hidden="true">
+    <div class="hero-mini" id="hero-mini" style="--hero-img:url('https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1400&q=60')">
+      <div class="wrap">
+        <div>
+          <div class="pill" id="pill-cat">Entretenimiento</div>
+          <h1 id="svc-name" style="margin:.4rem 0 0;letter-spacing:.3px">Servicio</h1>
+          <div class="muted" id="svc-desc">Planes disponibles y condiciones.</div>
+          <div style="height:12px"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn ghost" onclick="goHome()">← Volver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="wrap">
+      <div id="plans" class="plans"></div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <div>¿Tienes dudas? Escríbenos por WhatsApp.</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Modal del Carrito -->
+<div id="cartModal" style="display:none">
+  <div class="content">
+    <h2 style="margin:0 0 16px; font-size:1.5rem;">🛒 Carrito de Compras</h2>
+    <div id="cartItems">
+      <!-- Productos agregados -->
+    </div>
+
+    <!-- Campo de cupón -->
+    <div style="margin:12px 0;">
+      <input type="text" id="couponInput" placeholder="Código promocional" style="width:100%; padding:10px; border-radius:8px; border:1px solid #333; background:#1a1a1a; color:#fff; font-size:0.95rem;">
+      <button id="applyCouponBtn" class="btn secondary" style="margin-top:8px; width:100%;">Aplicar cupón</button>
+      <div id="couponStatus" style="margin-top:6px; font-size:0.85rem; color:#b8c0cc;"></div>
+    </div>
+
+    <div style="font-size:1.2rem; margin:12px 0;">Total: <span id="totalPrice">$0.00</span></div>
+    <button class="btn" style="width:100%; margin-top:16px;" onclick="checkout()">Pagar por WhatsApp</button>
+    <button class="btn secondary" style="width:100%; margin-top:8px;" onclick="closeCart()">Cerrar</button>
+  </div>
+</div>
+
+  <!-- Notificación moderna -->
+  <div id="notification" style="display:none">
+    <div id="notification-icon"></div>
+    <div id="notification-text"></div>
+  </div>
+
+  <!-- Floating Button & Social Menu -->
+  <style>
+    .floating-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 65px;
+      height: 65px;
+      background: linear-gradient(145deg, #007bff, #00d4ff);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.4), 0 0 20px rgba(0,183,255,0.8);
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .floating-btn:hover {
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 30px rgba(0,255,200,0.9);
+    }
+
+    .social-menu {
+      position: fixed;
+      bottom: 57px;
+      right: 57px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      pointer-events: none;
+    }
+    .social-menu li {
+      position: absolute;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.4s ease;
+    }
+    .social-menu li a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #444, #111);
+      color: #fff;
+      font-size: 22px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 15px rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+    }
+    .social-menu li a:hover {
+      background: linear-gradient(145deg, #ff0080, #7928ca);
+      transform: scale(1.2) rotate(10deg);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 20px rgba(255,0,200,0.9);
+    }
+
+    .social-menu.active li {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .social-menu.active li:nth-child(1) { transform: translate(-100px, -20px); }
+    .social-menu.active li:nth-child(2) { transform: translate(-70px, -90px); }
+    .social-menu.active li:nth-child(3) { transform: translate(0px, -120px); }
+    .social-menu.active li:nth-child(4) { transform: translate(70px, -90px); }
+  </style>
+
+  <div class="floating-btn" onclick="toggleMenu()">
+    <i class="fas fa-user"></i>
+  </div>
+  <ul class="social-menu" id="socialMenu">
+    <li><a href="https://www.facebook.com/profile.php?id=100076078974973" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+    <li><a href="https://www.tiktok.com/@techmants?_t=8jYTw3aqdPS&_r=1" target="_blank"><i class="fab fa-tiktok"></i></a></li>
+    <li><a href="https://wa.me/593993365409" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+    <li><a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a></li>
+  </ul>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("socialMenu").classList.toggle("active");
+    }
+  </script>
+
+  <!-- =================== Carrito de Compras =================== -->
+  <script>
+    // Carrito de compras
+    let cart = [];
+  let discountApplied = false;
+  const COUPON_CODE = "Techmants";
+  const DISCOUNT_AMOUNT = 0.50;
+
+  // Mostrar notificación moderna
+  function showNotification(message, type = 'success') {
+    const notif = document.getElementById('notification');
+    const icon = document.getElementById('notification-icon');
+    const text = document.getElementById('notification-text');
+
+    const icons = {
+      success: '<i class="fas fa-check-circle"></i>',
+      error: '<i class="fas fa-exclamation-triangle"></i>'
+    };
+
+    icon.innerHTML = icons[type] || icons.success;
+    text.textContent = message;
+
+    notif.className = 'notification';
+    notif.classList.add(type);
+    notif.style.display = 'block';
+
+    setTimeout(() => {
+      notif.style.opacity = '0';
+      notif.style.transform = 'translateY(-20px)';
+      setTimeout(() => {
+        notif.style.display = 'none';
+        notif.style.opacity = '1';
+        notif.style.transform = 'translateY(0)';
+      }, 300);
+    }, 2000);
+  }
+
+  function addToCart(serviceName, planName, price) {
+    const item = { serviceName, planName, price };
+    cart.push(item);
+    updateCart();
+    showNotification(`${planName} agregado al carrito.`, 'success');
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1); // Elimina el producto
+    updateCart();
+    showNotification("Producto eliminado del carrito.", 'success');
+  }
+
+  function updateCart() {
+    const itemsContainer = document.getElementById('cartItems');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const cartBadge = document.getElementById('cart-badge');
+    const couponStatus = document.getElementById('couponStatus');
+
+    itemsContainer.innerHTML = '';
+    let total = 0;
+
+    cart.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <span>${item.serviceName} – ${item.planName}</span>
+        <div>
+          <span style="margin-right:10px;">$${item.price.toFixed(2)}</span>
+          <span class="remove-btn" onclick="removeFromCart(${index})" title="Eliminar">&#10006;</span>
+        </div>
+      `;
+      itemsContainer.appendChild(div);
+      total += item.price;
+    });
+
+    // Validar si se puede aplicar el descuento
+    const canApplyDiscount = cart.length >= 2;
+    if (discountApplied && !canApplyDiscount) {
+      discountApplied = false;
+      showNotification("Descuento removido: se requieren al menos 2 productos.", 'error');
+    }
+
+    if (discountApplied) {
+      total -= DISCOUNT_AMOUNT;
+      couponStatus.textContent = "✅ Cupón 'Techmants' aplicado (-$0.50)";
+    } else {
+      if (canApplyDiscount) {
+        couponStatus.textContent = "Ingresa 'Techmants' para obtener $0.50 de descuento.";
+      } else {
+        couponStatus.textContent = "Se requieren 2 productos para aplicar descuento.";
+      }
+    }
+
+    totalPriceEl.textContent = `$${total.toFixed(2)}`;
+    cartBadge.textContent = cart.length || '0';
+  }
+
+  function openCart() {
+    document.getElementById('cartModal').style.display = 'flex';
+  }
+
+  function closeCart() {
+    document.getElementById('cartModal').style.display = 'none';
+  }
+
+  // Aplicar cupón
+  document.getElementById('applyCouponBtn')?.addEventListener('click', function () {
+    const input = document.getElementById('couponInput');
+    const code = input.value.trim();
+    const couponStatus = document.getElementById('couponStatus');
+
+    if (code.toLowerCase() === COUPON_CODE.toLowerCase()) {
+      if (cart.length >= 2) {
+        discountApplied = true;
+        showNotification("¡Cupón aplicado! $0.50 de descuento.", 'success');
+      } else {
+        discountApplied = false;
+        couponStatus.textContent = "❌ Se requieren al menos 2 productos para usar el cupón.";
+      }
+    } else {
+      discountApplied = false;
+      couponStatus.textContent = "❌ Código inválido.";
+    }
+    updateCart();
+  });
+
+  // Permitir presionar Enter en el input del cupón
+  document.getElementById('couponInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      document.getElementById('applyCouponBtn').click();
+    }
+  });
+
+  function checkout() {
+    if (cart.length === 0) return showNotification("Tu carrito está vacío.", 'error');
+
+    let total = cart.reduce((sum, item) => sum + item.price, 0);
+    if (discountApplied) {
+      total -= DISCOUNT_AMOUNT;
+    }
+
+    let msg = "Hola TechmanTS, quiero comprar:\n\n";
+    msg += cart.map(item => `• ${item.serviceName} – ${item.planName}: $${item.price.toFixed(2)}`).join("\n");
+
+    if (discountApplied) {
+      msg += `\n\nDescuento aplicado: -$${DISCOUNT_AMOUNT.toFixed(2)} (Código: Techmants)`;
+    }
+
+    msg += `\n\nTotal a pagar: $${total.toFixed(2)}`;
+
+    const wspLink = makeWspLink(msg);
+    window.open(wspLink, '_blank', 'noopener');
+    closeCart();
+    cart = [];
+    discountApplied = false;
+    updateCart();
+  }
+
+    /* =================== Config rápida =================== */
+    const WHATSAPP_NUMBER = '593993365409';
+
+    function makeWspLink(msg) {
+      const text = encodeURIComponent(msg);
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+    }
+
+    /* =================== Datos de servicios =================== */
+    const SERVICIOS = {
+      netflix: {
+        nombre: 'Netflix', categoria:'Entretenimiento', color:'#e50914',
+        cover:'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg',
+        hero:'https://cdn.milenio.com/uploads/media/2022/05/03/top-series-mas-vistas-de_45_0_1086_675.jpg',
+        descripcion:'Películas y Series.',
+        planes:[
+          {titulo:'1 mes Básico', precio:7.5, detalle:'1 dispositivo', agotado:true},
+          {titulo:'2 meses Básico', precio:14, detalle:'1 dispositivo', agotado:true},
+          {titulo:'3 meses Básico', precio:20, detalle:'1 dispositivo', agotado:true},
+          {titulo:'4 meses Básico', precio:26, detalle:'1 dispositivo', agotado:true},
+        ]
+      },
+      prime: {
+        nombre:'Prime Video', categoria:'Entretenimiento', color:'#00a8e1',
+        cover:'https://i.namu.wiki/i/h8ukwGC0Xfsz0USuwo582Oy3x8YcaRzr-WaJF4PS82QOA3Vs_li3Vpe2fRe3XLnJzj29CK5xeRkJKq-OQE5R3g.webp',
+        hero:'https://img.ohmymag.com/s3/fromm/1280/series/default_2022-11-23_745d54bb-861f-41b1-bfcd-2cdfc35fc6d8.jpeg',
+        descripcion:'Películas y Series.',
+        planes:[
+          {titulo:'Cuenta completa', precio:6, detalle:'Hasta 3 dispositivos (no simultáneos)', agotado:false},
+          {titulo:'1 perfil', precio:3, detalle:'Para 1 dispositivo', agotado:false},
+        ]
+      },
+      max: {
+        nombre:'Max (HBO)', categoria:'Entretenimiento', color:'#6b4eff',
+        cover:'https://cdn.cookielaw.org/logos/1b21e05d-c206-4e0b-970e-2d73a23e42e8/0197a7c4-04d2-738c-8132-953b14031ad0/f31b914f-2c23-4833-9137-145ab54d230c/hbomax25_-_min_-_resized.png',
+        hero:'https://imagenes.eltiempo.com/files/image_1200_535/uploads/2025/02/05/67a39e76e7d50.png',
+        descripcion:'Películas y Series.',
+        planes:[
+          {titulo:'Cuenta completa', precio:7, detalle:'Uso personal', agotado:false},
+          {titulo:'1 perfil', precio:3.5, detalle:'Para 1 dispositivo', agotado:false},
+        ]
+      },
+      disney: {
+        nombre:'Disney+', categoria:'Entretenimiento', color:'#113ccf',
+        cover:'https://logos-world.net/wp-content/uploads/2021/05/Disney-Logo.png',
+        hero:'https://media.a24.com/p/a9a0529e8d586f53676ea457a8fc9775/adjuntos/296/imagenes/009/415/0009415680/1200x675/smart/disney-plus-contenidos-disneyjpg.jpg',
+        descripcion:'Películas, Series, Canales ESPN.',
+        planes:[
+          {titulo:'Premium – Cuenta completa', precio:14, detalle:'', agotado:false},
+          {titulo:'Premium – 1 perfil', precio:5, detalle:'Para 1 dispositivo', agotado:false},
+          {titulo:'Standard – Cuenta completa', precio:10, detalle:'', agotado:false},
+          {titulo:'Standard – 1 perfil', precio:4, detalle:'Para 1 dispositivo', agotado:false},
+        ]
+      },
+      crunchy: {
+        nombre:'Crunchyroll', categoria:'Entretenimiento', color:'#f47521',
+        cover:'https://static.crunchyroll.com/cxweb/assets/img/og-image.png',
+        hero:'https://cdn.avpasion.com/wp-content/uploads/2024/02/app-crunchyroll-disponible-televisores-lg-webos-02.jpg',
+        descripcion:'Anime sin límites.',
+        planes:[
+          {titulo:'Cuenta completa', precio:5, detalle:'2 dispositivos simultáneos', agotado:false},
+          {titulo:'1 pantalla', precio:3, detalle:'1 dispositivo', agotado:false},
+        ]
+      },
+      youtube: {
+        nombre:'YouTube Premium', categoria:'Música/Video', color:'#ff0033',
+        cover:'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg',
+        hero:'https://cdn.mos.cms.futurecdn.net/jJneZLjUsUvFK5y3bJNUdD.jpg',
+        descripcion:'Música y video sin anuncios.',
+        planes:[
+          {titulo:'1 mes', precio:5, detalle:'1 dispositivo', agotado:false},
+          {titulo:'3 meses', precio:12, detalle:'1 dispositivo', agotado:false},
+        ]
+      },
+      spotify: {
+        nombre:'Spotify Premium', categoria:'Música', color:'#1db954',
+        cover:'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg',
+        hero:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1400&q=60',
+        descripcion:'Música sin anuncios.',
+        planes:[
+          {titulo:'1 mes', precio:5, detalle:'1 dispositivo', agotado:false},
+          {titulo:'3 meses', precio:10, detalle:'1 dispositivo', agotado:false},
+        ]
+      },
+      paramount: {
+        nombre:'Paramount+', categoria:'Entretenimiento', color:'#0b63f6',
+        cover:'https://upload.wikimedia.org/wikipedia/commons/e/ea/Paramount%2B_logo.png',
+        hero:'https://www.rollingstone.com/wp-content/uploads/2021/02/Paramount.jpg',
+        descripcion:'Películas y Series.',
+        planes:[
+          {titulo:'Cuenta completa', precio:5, detalle:'', agotado:false},
+          {titulo:'1 perfil', precio:3, detalle:'1 dispositivo', agotado:false},
+        ]
+      },
+      vix: {
+        nombre:'ViX+', categoria:'Entretenimiento', color:'#00a651',
+        cover:'https://static.wikia.nocookie.net/logopedia/images/0/07/Vix%2B.png',
+        hero:'https://discovery-content-gt.tigocloud.net/uploads/gt_destacado_vix_novelas_200224_20a967fcc4.webp',
+        descripcion:'Novelas, Películas y Series.',
+        planes:[
+          {titulo:'Cuenta completa', precio:5.5, detalle:'', agotado:false},
+          {titulo:'1 perfil', precio:3, detalle:'1 dispositivo', agotado:false},
+        ]
+      },
+      flujotv: {
+        nombre:'FlujoTV', categoria:'IPTV', color:'#06b6d4',
+        cover:'https://www.flujoapp.com/es-i/img/magistv-logo.png',
+        hero:'https://www.nielsen.com/wp-content/uploads/sites/2/2023/03/sports_metadata-main-1200x330-1.jpg',
+        descripcion:'Servicio de Televisión, canales Premium.',
+        planes:[
+          {titulo:'Plan $10', precio:10, detalle:'3 dispositivos', agotado:false},
+          {titulo:'Plan $27', precio:27, detalle:'3 dispositivos', agotado:false},
+          {titulo:'Plan $49', precio:49, detalle:'3 dispositivos', agotado:false},
+          {titulo:'Plan $87', precio:87, detalle:'3 dispositivos', agotado:false},
+        ]
+      },
+      apple: {
+        nombre:'Apple (TV / Music)', categoria:'Música/Video', color:'#000000',
+        cover:'https://www.edigitalagency.com.au/wp-content/uploads/Apple-TV-logo-white-PNG-medium-size.png',
+        hero:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1400&q=60',
+        descripcion:'Películas y Series.',
+        planes:[
+          {titulo:'Apple TV', precio:7, detalle:'', agotado:false},
+          {titulo:'Apple Music', precio:6, detalle:'1 dispositivo', agotado:false},
+        ]
+      },
+      office: {
+        nombre:'Microsoft Office 365', categoria:'Productividad', color:'#d83b01',
+        cover:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/2560px-Microsoft_logo_%282012%29.svg.png',
+        hero:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=60',
+        descripcion:'Licencia original. Sujeto a stock.',
+        planes:[
+          {titulo:'Licencia original', precio:20, detalle:'', agotado:false},
+          {titulo:'Google One (consulta stock)', precio:0, detalle:'', agotado:true},
+        ]
+      },
+    };
+
+    const ORDER = ['netflix','prime','max','disney','crunchy','youtube','spotify','paramount','vix','flujotv','apple','office'];
+
+    /* =================== Utilidades =================== */
+    const $ = (q, ctx=document) => ctx.querySelector(q);
+    const fmt = n => `$${Number(n).toLocaleString('es-EC',{minimumFractionDigits:(n%1?2:0), maximumFractionDigits:2})}`;
+
+    function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
+
+    function goHome(){
+      location.hash = '';
+      $('#view-home').style.display='block';
+      $('#view-planes').style.display='none';
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    }
+
+    function goToPlans(slug){
+      location.hash = `#planes/${slug}`;
+      renderPlans(slug);
+      $('#view-home').style.display='none';
+      $('#view-planes').style.display='block';
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    }
+
+    function renderServices(){
+      const grid = $('#services-grid');
+      grid.innerHTML = '';
+      ORDER.forEach(slug=>{
+        const s = SERVICIOS[slug];
+        if(!s) return;
+
+        const card = document.createElement('article');
+        card.className = 'card col-3 card-container';
+        card.innerHTML = `
+          <div class="card-container-inner">
+            <div class="card-front">
+              <img src="${s.cover}" alt="${s.nombre}">
+              <div class="title">${s.nombre}</div>
+              <div class="muted">${s.descripcion || ''}</div>
+            </div>
+            <div class="card-back">
+              <button aria-label="Ver planes de ${s.nombre}">Ver planes</button>
+            </div>
+          </div>
+        `;
+        card.querySelector('button').addEventListener('click',()=>goToPlans(slug));
+        grid.appendChild(card);
+      });
+    }
+
+    function renderPlans(slug){
+      const s = SERVICIOS[slug];
+      if(!s) return goHome();
+      $('#svc-name').textContent = s.nombre;
+      $('#svc-desc').textContent = s.descripcion || '';
+      $('#pill-cat').textContent = s.categoria;
+      $('#hero-mini').style.setProperty('--hero-img', `url('${s.hero || ''}')`);
+
+      const wrap = $('#plans');
+      wrap.innerHTML = '';
+      s.planes.forEach(p=>{
+        const art = document.createElement('article');
+        art.className = 'plan';
+        art.innerHTML = `
+          <div class="head" style="border-color:${s.color}22">
+            <div class="pill" style="border-color:${s.color}55;background:${s.color}22">${s.nombre}</div>
+            <h3>${p.titulo}</h3>
+            <div class="price" style="color:${s.color}">${p.agotado?'<span style="color:var(--warn);font-size:1.1rem">AGOTADO</span>':fmt(p.precio)}</div>
+          </div>
+          <div class="feat">
+            ${p.detalle?`<div>• ${p.detalle}</div>`:''}
+            <div class="muted">Entrega rápida y soporte.</div>
+          </div>
+          <div class="actions">
+            <button class="btn" ${p.agotado?'disabled':''} onclick="addToCart('${s.nombre}', '${p.titulo}', ${p.precio})">Agregar al carrito</button>
+            <button class="btn secondary">Compartir</button>
+          </div>
+        `;
+        art.querySelector('.actions .btn.secondary').addEventListener('click',()=>{
+          const shareUrl = `${location.origin}${location.pathname}#planes/${slug}`;
+          navigator.clipboard?.writeText(shareUrl);
+          showNotification('Enlace copiado al portapapeles.', 'success');
+        });
+        wrap.appendChild(art);
+      });
+    }
+
+
+
+
+    /* Parallax */
+    (function(){
+      const heroes = Array.from(document.querySelectorAll('section.hero'));
+      let ticking = false;
+      const clamp01 = n => Math.max(0, Math.min(1, n));
+      const progress = (rect, vh) => clamp01((vh - rect.top) / (rect.height + vh));
+      function update(){
+        ticking = false;
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        for (const hero of heroes){
+          const rect = hero.getBoundingClientRect();
+          const p = progress(rect, vh);
+          const bg = hero.querySelector('.bg');
+          if(!bg) continue;
+          const scale = 1.2 - 0.35 * p;
+          const opacity = 1.0 - 0.55 * p;
+          bg.style.transform = `scale(${scale.toFixed(3)})`;
+          bg.style.opacity = opacity.toFixed(3);
+        }
+      }
+      function onScroll(){ if(!ticking){ requestAnimationFrame(update); ticking = true; } }
+      update();
+      addEventListener('scroll', onScroll, {passive:true});
+      addEventListener('resize', onScroll);
+    })();
+
+    /* Dinámico: texto del hero */
+    const platforms = ["Netflix","Prime Video","Max","Disney+","Crunchyroll","YouTube Premium","Spotify Premium","FlujoTV"];
+    const elPlat = document.getElementById('platform');
+    let idx = 0;
+    setInterval(()=>{ elPlat.textContent = platforms[idx]; idx = (idx+1)%platforms.length; }, 2600);
+
+    /* Render inicial + Router */
+    function init(){
+      document.getElementById('y').textContent = new Date().getFullYear();
+      renderServices();
+      updateCart(); // Inicializa el carrito
+
+      if(location.hash.startsWith('#planes/')){
+        const slug = location.hash.split('/')[1];
+        goToPlans(slug);
+      } else {
+        goHome();
+      }
+    }
+    window.addEventListener('hashchange', ()=>{
+      if(location.hash.startsWith('#planes/')){
+        const slug = location.hash.split('/')[1];
+        goToPlans(slug);
+      } else { goHome(); }
+    });
+    init();
+  </script>
+
+  <style>
+    .card-container {
+      width: 100%;
+      height: 100%;
+      perspective: 1000px;
+    }
+    .card-container-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+    }
+    .card-container:hover .card-container-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    .card-front {
+      background: linear-gradient(180deg,#0f1220,#090b12);
+    }
+    .card-front img {
+      max-width: 80%;
+      max-height: 120px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    .card-front .title {
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .card-front .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .card-back {
+      background: var(--card);
+      color: var(--text);
+      transform: rotateY(180deg);
+      padding: 12px;
+    }
+    .card-back button {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg,var(--primary),#0ef);
+      border: none;
+      color: #001018;
+      transition: transform 0.2s ease;
+    }
+    .card-back button:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+
+
+<script>
+  const slider = document.getElementById('testimonial-slider');
+  const track = document.getElementById('testimonial-track');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const indicators = document.querySelectorAll('.indicator');
+
+  const cardWidth = 250;
+  const gap = 20;
+  const totalCards = 6;
+  let currentIndex = 0;
+
+  // Calcular ancho total del track
+  const totalWidth = (cardWidth + gap) * totalCards - gap;
+  track.style.width = `${totalWidth}px`;
+
+  // Función para mover el carrusel
+  function goToSlide(index) {
+    if (index < 0) index = totalCards - 1;
+    if (index >= totalCards) index = 0;
+    currentIndex = index;
+
+    // Animación de salida y entrada
+    const cards = document.querySelectorAll('.testimonial-card');
+    cards.forEach((card, i) => {
+      card.style.opacity = '0';
+      card.style.transform = 'scale(0.9)';
+      card.style.transition = 'all 0.5s ease';
+    });
+
+    // Esperar un poco antes de mostrar la nueva tarjeta
+    setTimeout(() => {
+      const currentCard = cards[index];
+      currentCard.style.opacity = '1';
+      currentCard.style.transform = 'scale(1)';
+      currentCard.style.transition = 'all 0.5s ease';
+
+      // Efecto de "parpadeo" con brillo
+      currentCard.style.boxShadow = '0 0 30px rgba(0,212,255,0.8)';
+      setTimeout(() => {
+        currentCard.style.boxShadow = '0 8px 20px rgba(0,0,0,.3)';
+      }, 500);
+    }, 100);
+
+    // Actualizar indicadores
+    indicators.forEach((ind, i) => {
+      ind.classList.toggle('active', i === index);
+    });
+  }
+
+  // Navegación
+  prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+  nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+  // Clic en indicadores
+  indicators.forEach(ind => {
+    ind.addEventListener('click', () => {
+      const slideIndex = parseInt(ind.dataset.slide);
+      goToSlide(slideIndex);
+    });
+  });
+
+  // Autoplay cada 4 segundos
+  setInterval(() => {
+    goToSlide(currentIndex + 1);
+  }, 4000);
+</script>
+
+</body>
+</html>
