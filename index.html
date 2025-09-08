@@ -477,6 +477,24 @@
     50% { transform: translateY(-4px); }
   }
 }
+
+
+    /* Quitar highlight azul feo en móviles sin afectar efectos */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; /* evita menú largo en iOS */
+}
+
+@media (hover: none) and (pointer: coarse) {
+  a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
+    outline: none; /* solo elimina borde feo en táctiles, no en desktop */
+  }
+}
+
   </style>
 </head>
 <body>
