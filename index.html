@@ -94,7 +94,7 @@
     .pill{display:inline-flex;align-items:center;gap:8px;padding:.35rem .7rem;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);backdrop-filter:blur(4px);font-size:.9rem}
 
     .plans{display:grid;gap:18px;grid-template-columns:repeat(12,1fr);padding:22px 0}
-    .plan{grid-column:span 4;background:linear-gradient(180deg,#0f1220,#090b12);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .plan{grid-column:span 4;background:linear-gradient(180deg,#0f1220,#090b12);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .28s ease, transform .18s ease, border-color .28s ease}
     .plan .head{padding:18px;border-bottom:1px solid var(--border)}
     .plan h3{margin:0;font-size:1.1rem}
     .price{font-size:2rem;font-weight:900;margin-top:4px}
@@ -102,6 +102,27 @@
     .plan .actions{padding:16px 18px;display:flex;gap:10px;flex-wrap:wrap}
     @media(max-width:1024px){.plan{grid-column:span 6}}
     @media(max-width:640px){.plan{grid-column:span 12}}
+
+    /* PLAN hover neon: usa --accent-color (set via JS) */
+    .plan:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 30px rgba(0,0,0,0.25);
+      border-color: rgba(255,255,255,0.06);
+    }
+    .plan:hover .head { box-shadow: 0 0 24px calc(1px + 0px) var(--accent-color, #00d4ff); border-color: var(--accent-color, #00d4ff); }
+    /* We'll add a glowing outline using ::after */
+    .plan::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      transition: box-shadow .28s ease;
+    }
+    .plan:hover::after {
+      box-shadow: 0 0 40px 8px rgba(0,0,0,0.0), 0 0 32px 2px rgba(255,255,255,0.02), 0 0 28px 2px var(--accent-color, #00d4ff);
+    }
 
     footer{border-top:1px solid var(--border);background:#0b0d11;color:#a9b3c2}
     footer .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
@@ -202,6 +223,260 @@
     #notification-text {
       font-size: 0.95rem;
     }
+
+    /* ====== NUEVO EFECTO RELIEVE TARJETAS (REEMPLAZA EL FLIP) ====== */
+    /* Esta sección reemplaza el antiguo flip. Manténla en tu CSS global. */
+    .card-container {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      height: 420px;
+      perspective: 900px;
+      margin: 0 auto;
+    }
+
+    .wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: all 0.5s ease;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+      border: 3px solid rgba(255,255,255,0.04);
+      z-index: 1;
+      cursor: pointer;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+      display:block;
+    }
+
+    /* Hover only for non-touch (desktop) */
+    @media (hover: hover) and (pointer: fine) {
+      .wrapper:hover {
+        transform: perspective(900px) translateY(-6%) rotateX(20deg);
+        box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75);
+      }
+      .wrapper:hover .background {
+        transform: scale(1.06);
+        filter:brightness(0.95) contrast(1.05);
+      }
+    }
+
+    .background {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform-origin: center;
+      transition: transform 0.6s ease, filter 0.6s ease;
+    }
+
+    .character {
+      position: absolute;
+      bottom: 70px; /* adjust para subir/bajar la figura */
+      left: 50%;
+      width: 46%;
+      max-width: 220px;
+      min-width: 96px;
+      height: auto;
+      transform: translateX(-50%) scale(0.86);
+      transition: all 0.55s cubic-bezier(.2,.9,.3,1);
+      z-index: 6;
+      pointer-events: none;
+      filter: drop-shadow(0 25px 40px rgba(0,0,0,0.6));
+    }
+
+    /* On hover (desktop) scale character */
+    @media (hover: hover) and (pointer: fine) {
+      .wrapper:hover ~ .character,
+      .wrapper:focus ~ .character {
+        transform: translateX(-50%) scale(1.35) translateY(-36px);
+      }
+    }
+
+    /* For touch devices: slightly smaller scale on focus */
+    /* ===== Mejora para dispositivos táctiles ===== */
+/* ===== Mejora para dispositivos táctiles - Activar efecto al tocar Y al deslizar ===== */
+@media (hover: none) and (pointer: coarse) {
+  .character {
+    width: 42%;
+    bottom: 60px;
+    transition: all 0.55s cubic-bezier(.2,.9,.3,1) !important;
+  }
+
+  /* Efecto al tocar (touchstart) */
+  .wrapper:active,
+  .wrapper.touched {
+    transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
+    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
+  }
+
+  .wrapper:active .background,
+  .wrapper.touched .background {
+    transform: scale(1.06) !important;
+    filter: brightness(0.95) contrast(1.05) !important;
+  }
+
+  .wrapper:active ~ .character,
+  .wrapper.touched ~ .character {
+    transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
+  }
+
+  /* También activar efecto al recibir foco (accesibilidad + teclados) */
+  .wrapper:focus {
+    transform: perspective(900px) translateY(-6%) rotateX(20deg) !important;
+    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.75) !important;
+  }
+
+  .wrapper:focus .background {
+    transform: scale(1.06) !important;
+    filter: brightness(0.95) contrast(1.05) !important;
+  }
+
+  .wrapper:focus ~ .character {
+    transform: translateX(-50%) scale(1.35) translateY(-36px) !important;
+  }
+}
+
+   .platform-logo {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  height: 48px; /* Ajusta este valor para hacer el logo más grande o pequeño */
+  z-index: 10;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); /* Sombra sutil para que destaque */
+  transition: transform 0.2s ease;
+}
+
+.platform-logo:hover {
+  transform: scale(1.1); /* Efecto sutil al pasar el mouse */
+}
+
+    .btn-ver-planes {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, #e50914, #ff6a00);
+      color: #fff;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+      z-index: 11;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.55);
+    }
+
+    .btn-ver-planes:hover {
+      transform: translateX(-50%) scale(1.06);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.65);
+    }
+
+    /* Responsive adjustments for grid */
+   /* Responsive adjustments for grid */
+@media (max-width: 1024px) {
+  .card-container { max-width: 260px; height: 420px; } /* ↑ Aumentado de 380px a 420px */
+  .character { width: 48%; bottom: 70px; } /* ↑ Aumentado de 64px a 70px */
+}
+@media (max-width: 520px) {
+  .card-container { max-width: 100%; height: 380px; } /* ↑ Aumentado de 320px a 380px */
+  .character { width: 46%; bottom: 66px; } /* ↑ Aumentado de 56px a 66px */
+  .btn-ver-planes { padding: 8px 16px; font-size: 13px; }
+}
+
+    /* =============== Testimonios con neón alternado =============== */
+    #testimonial-slider { position:relative; overflow:hidden; height:300px; background:#0d0d0d; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #1a1a1a; }
+    #testimonial-track { display:flex; gap:20px; padding:20px; align-items:center; }
+    .testimonial-card {
+      flex:0 0 250px;
+      background:#111218;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 8px 20px rgba(0,0,0,.3);
+      color:#fff;
+      text-align:left;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      border: 1px solid rgba(255,255,255,0.04);
+      position:relative;
+      overflow:visible;
+    }
+
+    /* Keyframes pulso neón (cambia intensidad) */
+    @keyframes neonPulseYellow {
+      0% { box-shadow: 0 0 6px rgba(255,210,60,0.12), inset 0 0 0 rgba(0,0,0,0); border-color: rgba(255,210,60,0.0); }
+      50% { box-shadow: 0 6px 28px rgba(255,210,60,0.22), 0 0 30px rgba(255,210,60,0.12); border-color: rgba(255,210,60,0.45); }
+      100% { box-shadow: 0 0 6px rgba(255,210,60,0.12); border-color: rgba(255,210,60,0.0); }
+    }
+    @keyframes neonPulseBlue {
+      0% { box-shadow: 0 0 6px rgba(0,200,255,0.12); border-color: rgba(0,200,255,0.0); }
+      50% { box-shadow: 0 6px 28px rgba(0,200,255,0.22), 0 0 30px rgba(0,200,255,0.12); border-color: rgba(0,200,255,0.45); }
+      100% { box-shadow: 0 0 6px rgba(0,200,255,0.12); border-color: rgba(0,200,255,0.0); }
+    }
+
+    /* Apply alternating animations and stagger them */
+    .testimonial-card:nth-child(4n+1),
+    .testimonial-card:nth-child(4n+2) {
+      animation: neonPulseYellow 4s ease-in-out infinite;
+      animation-delay: calc((var(--idx,0) * 0.25s));
+    }
+    .testimonial-card:nth-child(4n+3),
+    .testimonial-card:nth-child(4n+4) {
+      animation: neonPulseBlue 4s ease-in-out infinite;
+      animation-delay: calc((var(--idx,0) * 0.25s));
+    }
+
+    /* small hover glow intensify */
+    .testimonial-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      z-index: 20;
+    }
+/* Botón "Volver Arriba" con icono de doble flecha */
+.btn-back-to-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: #ffd700;
+  font-size: 18px;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  margin: 20px auto 0; /* Centrado horizontal y margen superior */
+}
+
+.btn-back-to-top:hover {
+  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.btn-back-to-top i {
+  transition: transform 0.2s ease;
+}
+
+.btn-back-to-top:hover i {
+  transform: translateY(-2px);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .card-container {
+    /* Añadir un sutil efecto de elevación al cargar */
+    animation: subtleFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes subtleFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+  }
+}
   </style>
 </head>
 <body>
@@ -211,8 +486,6 @@
     <nav class="nav">
       <div class="brand" onclick="goHome()" style="cursor:pointer">
         <div class="dot"></div>
-        <!-- <img src="https://i.imgur.com/vIwPovT.png" alt="Logo TechmanTS" style="width:24px;height:24px;vertical-align:middle;margin-right:8px;" />
-        <div>TechmanTS</div>-->
       </div>
       <div class="spacer"></div>
       <button class="btn ghost" onclick="goHome()">Inicio</button>
@@ -256,203 +529,170 @@
       <div id="services-grid" class="grid"></div>
     </section>
 
-    
+    <!-- Carrusel de Testimonios - Desplazamiento automático (sin parpadeo) -->
+    <section style="max-width:1200px; margin:60px auto 40px; padding:20px; text-align:center;">
+      <h2 style="font-size:1.8rem; color:#fff; margin-bottom:30px;">Testimonios de nuestros clientes</h2>
 
-<!-- Carrusel de Testimonios - Desplazamiento automático (sin parpadeo) -->
-<section style="max-width:1200px; margin:60px auto 40px; padding:20px; text-align:center;">
-  <h2 style="font-size:1.8rem; color:#fff; margin-bottom:30px;">Testimonios de nuestros clientes</h2>
+      <!-- Carrusel -->
+      <div id="testimonial-slider">
+        <div id="testimonial-track">
+          <!-- Testimonios (repetidos para bucle) -->
+          <div class="testimonial-card" style="--idx:0">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Daniel" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+              <div>
+                <strong>Daniel</strong>
+                <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+              </div>
+            </div>
+            <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+            <p style="font-size:0.95rem; line-height:1.5;">Muy satisfactorio y a las órdenes del cliente.</p>
+          </div>
 
-  <!-- Carrusel -->
-  <div id="testimonial-slider" 
-       style="position:relative; overflow:hidden; height:300px; background:#0d0d0d; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #1a1a1a;"
-       onmouseenter="this.style.animationPlayState='paused'"
-       onmouseleave="this.style.animationPlayState='running'">
-    
-    <!-- Track animado -->
-    <div id="testimonial-track" 
-         style="display:flex; gap:20px; padding:20px; animation: slideLeft 24s linear infinite;">
-      
-      <!-- Testimonios repetidos para bucle continuo -->
-      <!-- Testimonio 1 -->
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Daniel" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Daniel</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          <div class="testimonial-card" style="--idx:1">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Edis" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+              <div>
+                <strong>Edis</strong>
+                <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+              </div>
+            </div>
+            <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+            <p style="font-size:0.95rem; line-height:1.5;">Buen servicio 👍👍👍</p>
           </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy satisfactorio y a las órdenes del cliente.</p>
-      </div>
 
-      <!-- Testimonio 2 -->
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Edis" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Edis</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          <div class="testimonial-card" style="--idx:2">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Andrea López" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+              <div>
+                <strong>Andrea López</strong>
+                <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+              </div>
+            </div>
+            <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+            <p style="font-size:0.95rem; line-height:1.5;">Muy buena 🤝</p>
           </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Buen servicio 👍👍👍</p>
-      </div>
 
-      <!-- Testimonio 3 -->
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Andrea López" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Andrea López</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          <div class="testimonial-card" style="--idx:3">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mera" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+              <div>
+                <strong>Mera</strong>
+                <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+              </div>
+            </div>
+            <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+            <p style="font-size:0.95rem; line-height:1.5;">Muy bien y muy amable.</p>
           </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy buena 🤝</p>
-      </div>
 
-      <!-- Testimonio 4 -->
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mera" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Mera</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          <div class="testimonial-card" style="--idx:4">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Stalin" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+              <div>
+                <strong>Stalin</strong>
+                <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+              </div>
+            </div>
+            <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+            <p style="font-size:0.95rem; line-height:1.5;">Muy buen servicio muy recomendable.</p>
           </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy bien y muy amable.</p>
-      </div>
 
-      <!-- Testimonio 5 -->
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Stalin" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Stalin</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
+          <div class="testimonial-card" style="--idx:5">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mónica Valverde" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
+              <div>
+                <strong>Mónica Valverde</strong>
+                <div style="font-size:0.75rem; color:#b8c0cc;">January 17, 2024</div>
+              </div>
+            </div>
+            <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
+            <p style="font-size:0.95rem; line-height:1.5;">El servicio bueno 😊</p>
           </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy buen servicio muy recomendable.</p>
-      </div>
+    </section>
 
-      <!-- Testimonio 6 -->
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mónica Valverde" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Mónica Valverde</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 17, 2024</div>
-          </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">El servicio bueno 😊</p>
-      </div>
-
-      <!-- Repetición para bucle suave -->
-      <!-- (Copia los mismos 6 testimonios de nuevo para evitar vacíos durante el scroll) -->
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Daniel" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Daniel</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
-          </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy satisfactorio y a las órdenes del cliente.</p>
-      </div>
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Edis" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Edis</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
-          </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Buen servicio 👍👍👍</p>
-      </div>
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Andrea López" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Andrea López</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
-          </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy buena 🤝</p>
-      </div>
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mera" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Mera</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
-          </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy bien y muy amable.</p>
-      </div>
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Stalin" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Stalin</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 16, 2024</div>
-          </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">Muy buen servicio muy recomendable.</p>
-      </div>
-      <div class="testimonial-card" style="flex:0 0 250px; background:#1a1a1a; border-radius:12px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); color:#fff; text-align:left;">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-          <img src="https://cdn-icons-png.freepik.com/512/11820/11820363.png" alt="Mónica Valverde" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #00d4ff;">
-          <div>
-            <strong>Mónica Valverde</strong>
-            <div style="font-size:0.75rem; color:#b8c0cc;">January 17, 2024</div>
-          </div>
-        </div>
-        <div style="color:#ffd700; font-size:1.2rem; margin-bottom:8px;">★★★★★</div>
-        <p style="font-size:0.95rem; line-height:1.5;">El servicio bueno 😊</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Font Awesome (si no lo tienes cargado arriba) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<!-- Animación CSS -->
-<style>
-  @keyframes slideLeft {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  /* Efecto de neón */
-  .testimonial-card:hover {
-    box-shadow: 0 0 30px rgba(0,212,255,0.8) !important;
-    transform: scale(1.02);
-    border: 2px solid #00d4ff;
-  }
-</style>
-
-
-<footer>
+    <footer>
       <div class="wrap">
         <div>© <span id="y"></span> TechmanTS. Todos los derechos reservados.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <a class="btn secondary" href="#" onclick="scrollToTop();return false;">Volver arriba</a>
+          <!-- Botón Flotante "Volver Arriba" Elegante -->
+<a href="#" class="btn-back-to-top" onclick="scrollToTop(); return false;" aria-label="Volver arriba">
+  <i class="fas fa-chevron-up"></i>
+  <i class="fas fa-chevron-up" style="margin-top: -4px;"></i>
+</a>
+
+<style>
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffd700;
+  font-size: 18px;
+  text-decoration: none;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.back-to-top i {
+  transition: transform 0.2s ease;
+}
+
+.back-to-top:hover i {
+  transform: translateY(-2px);
+}
+</style>
+
+<script>
+// Mostrar/ocultar botón según scroll
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('backToTop');
+  if (window.scrollY > 400) {
+    btn.classList.add('show');
+  } else {
+    btn.classList.remove('show');
+  }
+});
+
+// Scroll suave al hacer clic
+document.getElementById('backToTop')?.addEventListener('click', function(e) {
+  e.preventDefault();
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+</script>
         </div>
       </div>
     </footer>
   </main>
 
-
-  <!-- ====================== VISTA: PLANES (SPA) ====================== -->
+  <!-- ====================== VISTA: PLANES ====================== -->
   <main id="view-planes" aria-hidden="true">
     <div class="hero-mini" id="hero-mini" style="--hero-img:url('https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1400&q=60')">
       <div class="wrap">
@@ -480,25 +720,22 @@
   </main>
 
   <!-- Modal del Carrito -->
-<div id="cartModal" style="display:none">
-  <div class="content">
-    <h2 style="margin:0 0 16px; font-size:1.5rem;">🛒 Carrito de Compras</h2>
-    <div id="cartItems">
-      <!-- Productos agregados -->
-    </div>
+  <div id="cartModal" style="display:none">
+    <div class="content">
+      <h2 style="margin:0 0 16px; font-size:1.5rem;">🛒 Carrito de Compras</h2>
+      <div id="cartItems"></div>
 
-    <!-- Campo de cupón -->
-    <div style="margin:12px 0;">
-      <input type="text" id="couponInput" placeholder="Código promocional" style="width:100%; padding:10px; border-radius:8px; border:1px solid #333; background:#1a1a1a; color:#fff; font-size:0.95rem;">
-      <button id="applyCouponBtn" class="btn secondary" style="margin-top:8px; width:100%;">Aplicar cupón</button>
-      <div id="couponStatus" style="margin-top:6px; font-size:0.85rem; color:#b8c0cc;"></div>
-    </div>
+      <div style="margin:12px 0;">
+        <input type="text" id="couponInput" placeholder="Código promocional" style="width:100%; padding:10px; border-radius:8px; border:1px solid #333; background:#1a1a1a; color:#fff; font-size:0.95rem;">
+        <button id="applyCouponBtn" class="btn secondary" style="margin-top:8px; width:100%;">Aplicar cupón</button>
+        <div id="couponStatus" style="margin-top:6px; font-size:0.85rem; color:#b8c0cc;"></div>
+      </div>
 
-    <div style="font-size:1.2rem; margin:12px 0;">Total: <span id="totalPrice">$0.00</span></div>
-    <button class="btn" style="width:100%; margin-top:16px;" onclick="checkout()">Pagar por WhatsApp</button>
-    <button class="btn secondary" style="width:100%; margin-top:8px;" onclick="closeCart()">Cerrar</button>
+      <div style="font-size:1.2rem; margin:12px 0;">Total: <span id="totalPrice">$0.00</span></div>
+      <button class="btn" style="width:100%; margin-top:16px;" onclick="checkout()">Pagar por WhatsApp</button>
+      <button class="btn secondary" style="width:100%; margin-top:8px;" onclick="closeCart()">Cerrar</button>
+    </div>
   </div>
-</div>
 
   <!-- Notificación moderna -->
   <div id="notification" style="display:none">
@@ -576,11 +813,20 @@
     .social-menu.active li:nth-child(2) { transform: translate(-70px, -90px); }
     .social-menu.active li:nth-child(3) { transform: translate(0px, -120px); }
     .social-menu.active li:nth-child(4) { transform: translate(70px, -90px); }
+
+    /* Estilo para la imagen dentro del botón flotante */
+.floating-btn-img {
+  width: 70%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 50%;
+  pointer-events: none; /* Evita que interfiera con el clic del botón */
+}
   </style>
 
   <div class="floating-btn" onclick="toggleMenu()">
-    <i class="fas fa-user"></i>
-  </div>
+  <img src="https://i.imgur.com/IW1zcSx.jpeg" alt="Menú TechmanTS" class="floating-btn-img" />
+</div>
   <ul class="social-menu" id="socialMenu">
     <li><a href="https://www.facebook.com/profile.php?id=100076078974973" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
     <li><a href="https://www.tiktok.com/@techmants?_t=8jYTw3aqdPS&_r=1" target="_blank"><i class="fab fa-tiktok"></i></a></li>
@@ -594,160 +840,170 @@
     }
   </script>
 
-  <!-- =================== Carrito de Compras =================== -->
+  <!-- =================== Carrito de Compras + Lógica SPA =================== -->
   <script>
     // Carrito de compras
     let cart = [];
-  let discountApplied = false;
-  const COUPON_CODE = "Techmants";
-  const DISCOUNT_AMOUNT = 0.50;
+    let discountApplied = false;
+    const COUPON_CODE = "Techmants";
+    const DISCOUNT_AMOUNT = 0.50;
 
-  // Mostrar notificación moderna
-  function showNotification(message, type = 'success') {
-    const notif = document.getElementById('notification');
-    const icon = document.getElementById('notification-icon');
-    const text = document.getElementById('notification-text');
+    // Mostrar notificación moderna
+   function showNotification(message, type = 'success') {
+  const notif = document.getElementById('notification');
+  const icon = document.getElementById('notification-icon');
+  const text = document.getElementById('notification-text');
+  const icons = {
+    success: '<i class="fas fa-check-circle"></i>',
+    error: '<i class="fas fa-exclamation-triangle"></i>'
+  };
 
-    const icons = {
-      success: '<i class="fas fa-check-circle"></i>',
-      error: '<i class="fas fa-exclamation-triangle"></i>'
-    };
+  // 1. Reset completo de estilos antes de mostrar
+  notif.style.display = 'block';
+  notif.style.opacity = '0';
+  notif.style.transform = 'translateY(-20px)';
 
-    icon.innerHTML = icons[type] || icons.success;
-    text.textContent = message;
+  // 2. Aplicar contenido e icono
+  icon.innerHTML = icons[type] || icons.success;
+  text.textContent = message;
+  notif.className = 'notification';
+  notif.classList.add(type);
 
-    notif.className = 'notification';
-    notif.classList.add(type);
-    notif.style.display = 'block';
+  // 3. Forzar reflow del navegador para que aplique los estilos reseteados
+  void notif.offsetWidth; // <-- TRUCO CLAVE: fuerza al navegador a aplicar los estilos antes de la animación
 
+  // 4. Iniciar animación de entrada
+  notif.style.opacity = '1';
+  notif.style.transform = 'translateY(0)';
+
+  // 5. Programar desaparición
+  setTimeout(() => {
+    notif.style.opacity = '0';
+    notif.style.transform = 'translateY(-20px)';
     setTimeout(() => {
-      notif.style.opacity = '0';
-      notif.style.transform = 'translateY(-20px)';
-      setTimeout(() => {
-        notif.style.display = 'none';
-        notif.style.opacity = '1';
-        notif.style.transform = 'translateY(0)';
-      }, 300);
-    }, 2000);
-  }
+      notif.style.display = 'none';
+      // No reseteamos opacity/transform aquí porque ya se resetean al inicio de la próxima llamada
+    }, 300);
+  }, 2000);
+}
 
-  function addToCart(serviceName, planName, price) {
-    const item = { serviceName, planName, price };
-    cart.push(item);
-    updateCart();
-    showNotification(`${planName} agregado al carrito.`, 'success');
-  }
-
-  function removeFromCart(index) {
-    cart.splice(index, 1); // Elimina el producto
-    updateCart();
-    showNotification("Producto eliminado del carrito.", 'success');
-  }
-
-  function updateCart() {
-    const itemsContainer = document.getElementById('cartItems');
-    const totalPriceEl = document.getElementById('totalPrice');
-    const cartBadge = document.getElementById('cart-badge');
-    const couponStatus = document.getElementById('couponStatus');
-
-    itemsContainer.innerHTML = '';
-    let total = 0;
-
-    cart.forEach((item, index) => {
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <span>${item.serviceName} – ${item.planName}</span>
-        <div>
-          <span style="margin-right:10px;">$${item.price.toFixed(2)}</span>
-          <span class="remove-btn" onclick="removeFromCart(${index})" title="Eliminar">&#10006;</span>
-        </div>
-      `;
-      itemsContainer.appendChild(div);
-      total += item.price;
-    });
-
-    // Validar si se puede aplicar el descuento
-    const canApplyDiscount = cart.length >= 2;
-    if (discountApplied && !canApplyDiscount) {
-      discountApplied = false;
-      showNotification("Descuento removido: se requieren al menos 2 productos.", 'error');
+    function addToCart(serviceName, planName, price) {
+      const item = { serviceName, planName, price };
+      cart.push(item);
+      updateCart();
+      showNotification(`${planName} agregado al carrito.`, 'success');
     }
 
-    if (discountApplied) {
-      total -= DISCOUNT_AMOUNT;
-      couponStatus.textContent = "✅ Cupón 'Techmants' aplicado (-$0.50)";
-    } else {
-      if (canApplyDiscount) {
-        couponStatus.textContent = "Ingresa 'Techmants' para obtener $0.50 de descuento.";
-      } else {
-        couponStatus.textContent = "Se requieren 2 productos para aplicar descuento.";
+    function removeFromCart(index) {
+      cart.splice(index, 1); // Elimina el producto
+      updateCart();
+      showNotification("Producto eliminado del carrito.", 'success');
+    }
+
+    function updateCart() {
+      const itemsContainer = document.getElementById('cartItems');
+      const totalPriceEl = document.getElementById('totalPrice');
+      const cartBadge = document.getElementById('cart-badge');
+      const couponStatus = document.getElementById('couponStatus');
+
+      itemsContainer.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <span>${item.serviceName} – ${item.planName}</span>
+          <div>
+            <span style="margin-right:10px;">$${item.price.toFixed(2)}</span>
+            <span class="remove-btn" onclick="removeFromCart(${index})" title="Eliminar">&#10006;</span>
+          </div>
+        `;
+        itemsContainer.appendChild(div);
+        total += item.price;
+      });
+
+      // Validar si se puede aplicar el descuento
+      const canApplyDiscount = cart.length >= 2;
+      if (discountApplied && !canApplyDiscount) {
+        discountApplied = false;
+        showNotification("Descuento removido: se requieren al menos 2 productos.", 'error');
       }
+
+      if (discountApplied) {
+        total -= DISCOUNT_AMOUNT;
+        couponStatus.textContent = "✅ Cupón 'Techmants' aplicado (-$0.50)";
+      } else {
+        if (canApplyDiscount) {
+          couponStatus.textContent = "Ingresa 'Techmants' para obtener $0.50 de descuento.";
+        } else {
+          couponStatus.textContent = "Se requieren 2 productos para aplicar descuento.";
+        }
+      }
+
+      totalPriceEl.textContent = `$${total.toFixed(2)}`;
+      cartBadge.textContent = cart.length || '0';
     }
 
-    totalPriceEl.textContent = `$${total.toFixed(2)}`;
-    cartBadge.textContent = cart.length || '0';
-  }
+    function openCart() {
+      document.getElementById('cartModal').style.display = 'flex';
+    }
 
-  function openCart() {
-    document.getElementById('cartModal').style.display = 'flex';
-  }
+    function closeCart() {
+      document.getElementById('cartModal').style.display = 'none';
+    }
 
-  function closeCart() {
-    document.getElementById('cartModal').style.display = 'none';
-  }
+    // Aplicar cupón
+    document.getElementById('applyCouponBtn')?.addEventListener('click', function () {
+      const input = document.getElementById('couponInput');
+      const code = input.value.trim();
+      const couponStatus = document.getElementById('couponStatus');
 
-  // Aplicar cupón
-  document.getElementById('applyCouponBtn')?.addEventListener('click', function () {
-    const input = document.getElementById('couponInput');
-    const code = input.value.trim();
-    const couponStatus = document.getElementById('couponStatus');
-
-    if (code.toLowerCase() === COUPON_CODE.toLowerCase()) {
-      if (cart.length >= 2) {
-        discountApplied = true;
-        showNotification("¡Cupón aplicado! $0.50 de descuento.", 'success');
+      if (code.toLowerCase() === COUPON_CODE.toLowerCase()) {
+        if (cart.length >= 2) {
+          discountApplied = true;
+          showNotification("¡Cupón aplicado! $0.50 de descuento.", 'success');
+        } else {
+          discountApplied = false;
+          couponStatus.textContent = "❌ Se requieren al menos 2 productos para usar el cupón.";
+        }
       } else {
         discountApplied = false;
-        couponStatus.textContent = "❌ Se requieren al menos 2 productos para usar el cupón.";
+        couponStatus.textContent = "❌ Código inválido.";
       }
-    } else {
+      updateCart();
+    });
+
+    // Permitir presionar Enter en el input del cupón
+    document.getElementById('couponInput')?.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('applyCouponBtn').click();
+      }
+    });
+
+    function checkout() {
+      if (cart.length === 0) return showNotification("Tu carrito está vacío.", 'error');
+
+      let total = cart.reduce((sum, item) => sum + item.price, 0);
+      if (discountApplied) {
+        total -= DISCOUNT_AMOUNT;
+      }
+
+      let msg = "Hola TechmanTS, quiero comprar:\n\n";
+      msg += cart.map(item => `• ${item.serviceName} – ${item.planName}: $${item.price.toFixed(2)}`).join("\n");
+
+      if (discountApplied) {
+        msg += `\n\nDescuento aplicado: -$${DISCOUNT_AMOUNT.toFixed(2)} (Código: Techmants)`;
+      }
+
+      msg += `\n\nTotal a pagar: $${total.toFixed(2)}`;
+
+      const wspLink = makeWspLink(msg);
+      window.open(wspLink, '_blank', 'noopener');
+      closeCart();
+      cart = [];
       discountApplied = false;
-      couponStatus.textContent = "❌ Código inválido.";
+      updateCart();
     }
-    updateCart();
-  });
-
-  // Permitir presionar Enter en el input del cupón
-  document.getElementById('couponInput')?.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      document.getElementById('applyCouponBtn').click();
-    }
-  });
-
-  function checkout() {
-    if (cart.length === 0) return showNotification("Tu carrito está vacío.", 'error');
-
-    let total = cart.reduce((sum, item) => sum + item.price, 0);
-    if (discountApplied) {
-      total -= DISCOUNT_AMOUNT;
-    }
-
-    let msg = "Hola TechmanTS, quiero comprar:\n\n";
-    msg += cart.map(item => `• ${item.serviceName} – ${item.planName}: $${item.price.toFixed(2)}`).join("\n");
-
-    if (discountApplied) {
-      msg += `\n\nDescuento aplicado: -$${DISCOUNT_AMOUNT.toFixed(2)} (Código: Techmants)`;
-    }
-
-    msg += `\n\nTotal a pagar: $${total.toFixed(2)}`;
-
-    const wspLink = makeWspLink(msg);
-    window.open(wspLink, '_blank', 'noopener');
-    closeCart();
-    cart = [];
-    discountApplied = false;
-    updateCart();
-  }
 
     /* =================== Config rápida =================== */
     const WHATSAPP_NUMBER = '593993365409';
@@ -761,8 +1017,10 @@
     const SERVICIOS = {
       netflix: {
         nombre: 'Netflix', categoria:'Entretenimiento', color:'#e50914',
-        cover:'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg',
-        hero:'https://cdn.milenio.com/uploads/media/2022/05/03/top-series-mas-vistas-de_45_0_1086_675.jpg',
+          logo: 'https://images.icon-icons.com/2699/PNG/512/netflix_logo_icon_170919.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://i.pinimg.com/736x/df/65/e9/df65e996eb84a4599dbbed34cc85c049.jpg', // cover => tarjeta
+        hero:'https://cdn.milenio.com/uploads/media/2022/05/03/top-series-mas-vistas-de_45_0_1086_675.jpg', // hero => planes
+        personaje:'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/a6c08249-45b1-4852-ac3c-f5e49a7f6d25/d6tv28o-53378764-fe5c-4264-9bdc-7ae0ab9dfc97.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2E2YzA4MjQ5LTQ1YjEtNDg1Mi1hYzNjLWY1ZTQ5YTdmNmQyNVwvZDZ0djI4by01MzM3ODc2NC1mZTVjLTQyNjQtOWJkYy03YWUwYWI5ZGZjOTcucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.pg3ZqJdKcHX6ILmTKR89I8bd5P6tx-W6kcmk4zS31eE',
         descripcion:'Películas y Series.',
         planes:[
           {titulo:'1 mes Básico', precio:7.5, detalle:'1 dispositivo', agotado:true},
@@ -773,8 +1031,10 @@
       },
       prime: {
         nombre:'Prime Video', categoria:'Entretenimiento', color:'#00a8e1',
-        cover:'https://i.namu.wiki/i/h8ukwGC0Xfsz0USuwo582Oy3x8YcaRzr-WaJF4PS82QOA3Vs_li3Vpe2fRe3XLnJzj29CK5xeRkJKq-OQE5R3g.webp',
+        logo: 'https://www.pngkey.com/png/full/267-2679944_amazon-prime-logo-prime-video-android-tv-apk.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://pbs.twimg.com/media/ErLAX5sXAAMoZ3f.jpg:large',
         hero:'https://img.ohmymag.com/s3/fromm/1280/series/default_2022-11-23_745d54bb-861f-41b1-bfcd-2cdfc35fc6d8.jpeg',
+        personaje:'https://img-02.stickers.cloud/packs/1dbeac20-5aff-48dd-a276-e7fc3a524cd0/webp/f8ddc077-653d-4dab-8fad-fd69506545da.webp',
         descripcion:'Películas y Series.',
         planes:[
           {titulo:'Cuenta completa', precio:6, detalle:'Hasta 3 dispositivos (no simultáneos)', agotado:false},
@@ -783,8 +1043,10 @@
       },
       max: {
         nombre:'Max (HBO)', categoria:'Entretenimiento', color:'#6b4eff',
-        cover:'https://cdn.cookielaw.org/logos/1b21e05d-c206-4e0b-970e-2d73a23e42e8/0197a7c4-04d2-738c-8132-953b14031ad0/f31b914f-2c23-4833-9137-145ab54d230c/hbomax25_-_min_-_resized.png',
+        logo: 'https://beam-images.warnermediacdn.com/2025-06/hbo-max-logo-iridescent-2025.png?host=wbd-dotcom-drupal-prd-us-east-1.s3.amazonaws.com', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://preview.redd.it/el-chavo-de-ocho-v0-hkrrru5t5nvd1.jpg?width=640&crop=smart&auto=webp&s=3008b78e0106e85497a5c85dd9a5dbd86ed9b7e9',
         hero:'https://imagenes.eltiempo.com/files/image_1200_535/uploads/2025/02/05/67a39e76e7d50.png',
+        personaje:'https://i.imgur.com/T0dItlu.png',
         descripcion:'Películas y Series.',
         planes:[
           {titulo:'Cuenta completa', precio:7, detalle:'Uso personal', agotado:false},
@@ -793,8 +1055,10 @@
       },
       disney: {
         nombre:'Disney+', categoria:'Entretenimiento', color:'#113ccf',
-        cover:'https://logos-world.net/wp-content/uploads/2021/05/Disney-Logo.png',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/7/77/Disney_Plus_logo.svg', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://i.pinimg.com/564x/89/7c/dc/897cdc5feac4f18a0d09054b55afcd74.jpg',
         hero:'https://media.a24.com/p/a9a0529e8d586f53676ea457a8fc9775/adjuntos/296/imagenes/009/415/0009415680/1200x675/smart/disney-plus-contenidos-disneyjpg.jpg',
+        personaje:'https://freepngimg.com/thumb/captain_america/7-2-captain-america-png-hd-thumb.png',
         descripcion:'Películas, Series, Canales ESPN.',
         planes:[
           {titulo:'Premium – Cuenta completa', precio:14, detalle:'', agotado:false},
@@ -805,8 +1069,10 @@
       },
       crunchy: {
         nombre:'Crunchyroll', categoria:'Entretenimiento', color:'#f47521',
-        cover:'https://static.crunchyroll.com/cxweb/assets/img/og-image.png',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Crunchyroll.svg/2560px-Crunchyroll.svg.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://e1.pxfuel.com/desktop-wallpaper/933/197/desktop-wallpaper-dragon-ball-z-battle-of-gods-dbz-battle-of-the-gods-background.jpg',
         hero:'https://cdn.avpasion.com/wp-content/uploads/2024/02/app-crunchyroll-disponible-televisores-lg-webos-02.jpg',
+        personaje:'https://www.pikpng.com/pngl/b/239-2390327_imgenes-de-goku-en-ultra-instinto-dominado-clipart.png',
         descripcion:'Anime sin límites.',
         planes:[
           {titulo:'Cuenta completa', precio:5, detalle:'2 dispositivos simultáneos', agotado:false},
@@ -815,8 +1081,10 @@
       },
       youtube: {
         nombre:'YouTube Premium', categoria:'Música/Video', color:'#ff0033',
-        cover:'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg',
+        logo: 'https://i.imgur.com/WaSKIlE.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://thumbs.dreamstime.com/b/fondo-azul-y-p%C3%BArpura-oscuro-del-escenario-con-focos-escena-esc%C3%A9nica-oscura-vigas-l%C3%A1ser-de-ne%C3%B3n-en-el-suelo-asfalto-ideal-para-361572666.jpg',
         hero:'https://cdn.mos.cms.futurecdn.net/jJneZLjUsUvFK5y3bJNUdD.jpg',
+        personaje:'https://static.ptocdn.net/especiales/biz246_karol-g/recursos/images/bichota-v2-min.png',
         descripcion:'Música y video sin anuncios.',
         planes:[
           {titulo:'1 mes', precio:5, detalle:'1 dispositivo', agotado:false},
@@ -825,8 +1093,10 @@
       },
       spotify: {
         nombre:'Spotify Premium', categoria:'Música', color:'#1db954',
-        cover:'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg',
+        logo: 'https://storage.googleapis.com/pr-newsroom-wp/1/2021/02/Spotify_Logo_RGB_White.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://png.pngtree.com/background/20250102/original/pngtree-performance-concert-stage-background-picture-image_15170584.jpg',
         hero:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1400&q=60',
+        personaje:'https://sarime.com/images/portada-crop-u178470.png?crc=375970778',
         descripcion:'Música sin anuncios.',
         planes:[
           {titulo:'1 mes', precio:5, detalle:'1 dispositivo', agotado:false},
@@ -835,8 +1105,10 @@
       },
       paramount: {
         nombre:'Paramount+', categoria:'Entretenimiento', color:'#0b63f6',
-        cover:'https://upload.wikimedia.org/wikipedia/commons/e/ea/Paramount%2B_logo.png',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/Paramount%2B_logo.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://i.ytimg.com/vi/7EEjRMlk1rc/maxresdefault.jpg',
         hero:'https://www.rollingstone.com/wp-content/uploads/2021/02/Paramount.jpg',
+        personaje:'https://i.imgur.com/SG5Cn3w.png',
         descripcion:'Películas y Series.',
         planes:[
           {titulo:'Cuenta completa', precio:5, detalle:'', agotado:false},
@@ -845,18 +1117,22 @@
       },
       vix: {
         nombre:'ViX+', categoria:'Entretenimiento', color:'#00a651',
-        cover:'https://static.wikia.nocookie.net/logopedia/images/0/07/Vix%2B.png',
+         logo: 'https://images.ctfassets.net/6n252fx9hkkr/7vKqy8Vkx0LbDivk8oMdZ5/282346cd83d1324afe571e0c7d946d6d/logo_Vixpremium.webp', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://png.pngtree.com/thumb_back/fh260/background/20230611/pngtree-courtyard-of-an-old-building-image_2918263.jpg',
         hero:'https://discovery-content-gt.tigocloud.net/uploads/gt_destacado_vix_novelas_200224_20a967fcc4.webp',
+        personaje:'https://i.imgur.com/reY6l7T.png',
         descripcion:'Novelas, Películas y Series.',
         planes:[
-          {titulo:'Cuenta completa', precio:5.5, detalle:'', agotado:false},
-          {titulo:'1 perfil', precio:3, detalle:'1 dispositivo', agotado:false},
+          {titulo:'Cuenta completa', precio:5.5, detail: '', agotado:false},
+          {titulo:'1 perfil', precio:3, detail: '', agotado:false},
         ]
       },
       flujotv: {
         nombre:'FlujoTV', categoria:'IPTV', color:'#06b6d4',
-        cover:'https://www.flujoapp.com/es-i/img/magistv-logo.png',
+        logo: 'https://mymagistv.com.co/wp-content/uploads/2025/01/Flujo-TV-Logo.webp', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://wallpapers.com/images/hd/soccer-stadium-1920-x-1080-background-cyxq3t1uqafw22aq.jpg',
         hero:'https://www.nielsen.com/wp-content/uploads/sites/2/2023/03/sports_metadata-main-1200x330-1.jpg',
+        personaje:'https://www.freeiconspng.com/uploads/cr7-png-1.png',
         descripcion:'Servicio de Televisión, canales Premium.',
         planes:[
           {titulo:'Plan $10', precio:10, detalle:'3 dispositivos', agotado:false},
@@ -867,8 +1143,10 @@
       },
       apple: {
         nombre:'Apple (TV / Music)', categoria:'Música/Video', color:'#000000',
-        cover:'https://www.edigitalagency.com.au/wp-content/uploads/Apple-TV-logo-white-PNG-medium-size.png',
+        logo: 'https://www.edigitalagency.com.au/wp-content/uploads/Apple-TV-logo-white-PNG-large-size.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://i.pinimg.com/736x/cf/5b/67/cf5b6775072e2ed926b05006734ad15b.jpg',
         hero:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1400&q=60',
+        personaje:'https://png.pngtree.com/png-clipart/20241121/original/pngtree-astronaut-png-image_17283393.png',
         descripcion:'Películas y Series.',
         planes:[
           {titulo:'Apple TV', precio:7, detalle:'', agotado:false},
@@ -877,14 +1155,16 @@
       },
       office: {
         nombre:'Microsoft Office 365', categoria:'Productividad', color:'#d83b01',
-        cover:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/2560px-Microsoft_logo_%282012%29.svg.png',
+        logo: 'https://iloveecommerce.com.br/wp-content/uploads/2024/08/img_66d0d5d95d2c2-800x432.png', // <-- NUEVA LÍNEA: URL del logo
+        cover:'https://img.freepik.com/foto-gratis/manzana-verde-computadora-portatil-lapices-colores-lentes-plan-presupuesto-sobre-escritorio_23-2148178633.jpg?semt=ais_incoming&w=740&q=80',
         hero:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=60',
+        personaje:'https://png.pngtree.com/png-clipart/20231120/original/pngtree-confident-businesswoman-holding-laptop-white-background-photo-png-image_13656524.png',
         descripcion:'Licencia original. Sujeto a stock.',
         planes:[
           {titulo:'Licencia original', precio:20, detalle:'', agotado:false},
           {titulo:'Google One (consulta stock)', precio:0, detalle:'', agotado:true},
         ]
-      },
+      }
     };
 
     const ORDER = ['netflix','prime','max','disney','crunchy','youtube','spotify','paramount','vix','flujotv','apple','office'];
@@ -910,28 +1190,37 @@
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
 
+    /* =================== NUEVO renderServices() - usa cover + personaje por servicio =================== */
     function renderServices(){
       const grid = $('#services-grid');
       grid.innerHTML = '';
-      ORDER.forEach(slug=>{
+
+      ORDER.forEach((slug, idx)=>{
         const s = SERVICIOS[slug];
         if(!s) return;
 
+        // cover => fondo de tarjeta. hero => solo para página de planes.
+        const cover = s.cover || s.hero || 'https://i.imgur.com/AvHvVJh.jpeg';
+        const personaje = s.personaje || s.cover || s.hero || 'https://www.pikpng.com/pngl/b/381-3812680_hombre-araa-png.png';
+
         const card = document.createElement('article');
-        card.className = 'card col-3 card-container';
+        card.className = 'card col-3';
+        // Estructura nueva: wrapper (fondo + logo + botón) + imagen personaje fuera del wrapper
         card.innerHTML = `
-          <div class="card-container-inner">
-            <div class="card-front">
-              <img src="${s.cover}" alt="${s.nombre}">
-              <div class="title">${s.nombre}</div>
-              <div class="muted">${s.descripcion || ''}</div>
+          <div class="card-container">
+            <div class="wrapper" tabindex="0">
+              <img src="${cover}" alt="${s.nombre} - cover" class="background" />
+              <img src="${s.logo}" alt="${s.nombre}" class="platform-logo" />
+              <button class="btn-ver-planes">Ver Planes</button>
             </div>
-            <div class="card-back">
-              <button aria-label="Ver planes de ${s.nombre}">Ver planes</button>
-            </div>
+            <img src="${personaje}" alt="${s.nombre} - personaje" class="character" />
           </div>
         `;
-        card.querySelector('button').addEventListener('click',()=>goToPlans(slug));
+
+        // click al botón → lleva a planes del servicio
+        const btn = card.querySelector('.btn-ver-planes');
+        if(btn) btn.addEventListener('click',()=>goToPlans(slug));
+
         grid.appendChild(card);
       });
     }
@@ -942,13 +1231,16 @@
       $('#svc-name').textContent = s.nombre;
       $('#svc-desc').textContent = s.descripcion || '';
       $('#pill-cat').textContent = s.categoria;
-      $('#hero-mini').style.setProperty('--hero-img', `url('${s.hero || ''}')`);
+      // hero used ONLY for plans header
+      $('#hero-mini').style.setProperty('--hero-img', `url('${s.hero || s.cover || ''}')`);
 
       const wrap = $('#plans');
       wrap.innerHTML = '';
       s.planes.forEach(p=>{
         const art = document.createElement('article');
         art.className = 'plan';
+        // set accent color for hover neon
+        art.style.setProperty('--accent-color', s.color || '#00d4ff');
         art.innerHTML = `
           <div class="head" style="border-color:${s.color}22">
             <div class="pill" style="border-color:${s.color}55;background:${s.color}22">${s.nombre}</div>
@@ -972,9 +1264,6 @@
         wrap.appendChild(art);
       });
     }
-
-
-
 
     /* Parallax */
     (function(){
@@ -1006,7 +1295,7 @@
     const platforms = ["Netflix","Prime Video","Max","Disney+","Crunchyroll","YouTube Premium","Spotify Premium","FlujoTV"];
     const elPlat = document.getElementById('platform');
     let idx = 0;
-    setInterval(()=>{ elPlat.textContent = platforms[idx]; idx = (idx+1)%platforms.length; }, 2600);
+    setInterval(()=>{ if(elPlat) elPlat.textContent = platforms[idx]; idx = (idx+1)%platforms.length; }, 2600);
 
     /* Render inicial + Router */
     function init(){
@@ -1030,144 +1319,93 @@
     init();
   </script>
 
-  <style>
-    .card-container {
-      width: 100%;
-      height: 100%;
-      perspective: 1000px;
-    }
-    .card-container-inner {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.6s ease;
-    }
-    .card-container:hover .card-container-inner {
-      transform: rotateY(180deg);
-    }
-    .card-front, .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-    .card-front {
-      background: linear-gradient(180deg,#0f1220,#090b12);
-    }
-    .card-front img {
-      max-width: 80%;
-      max-height: 120px;
-      object-fit: contain;
-      margin-bottom: 10px;
-    }
-    .card-front .title {
-      font-weight: 800;
-      color: var(--text);
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .card-front .muted {
-      color: var(--muted);
-      font-size: 0.9rem;
-      text-align: center;
-    }
-    .card-back {
-      background: var(--card);
-      color: var(--text);
-      transform: rotateY(180deg);
-      padding: 12px;
-    }
-    .card-back button {
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-weight: 800;
-      cursor: pointer;
-      background: linear-gradient(135deg,var(--primary),#0ef);
-      border: none;
-      color: #001018;
-      transition: transform 0.2s ease;
-    }
-    .card-back button:hover {
-      transform: translateY(-2px);
-    }
-  </style>
-
-
+  <!-- Testimonial animation JS - Auto-scroll suave e infinito -->
 <script>
-  const slider = document.getElementById('testimonial-slider');
+(function(){
   const track = document.getElementById('testimonial-track');
-  const prevBtn = document.getElementById('prev-btn');
-  const nextBtn = document.getElementById('next-btn');
-  const indicators = document.querySelectorAll('.indicator');
+  if(!track) return;
 
-  const cardWidth = 250;
-  const gap = 20;
-  const totalCards = 6;
-  let currentIndex = 0;
+  const cards = Array.from(track.children);
+  const cardWidth = cards[0]?.offsetWidth || 250;
+  const gap = 20; // Debe coincidir con el gap en CSS
+  const totalWidth = (cardWidth + gap) * cards.length;
 
-  // Calcular ancho total del track
-  const totalWidth = (cardWidth + gap) * totalCards - gap;
-  track.style.width = `${totalWidth}px`;
-
-  // Función para mover el carrusel
-  function goToSlide(index) {
-    if (index < 0) index = totalCards - 1;
-    if (index >= totalCards) index = 0;
-    currentIndex = index;
-
-    // Animación de salida y entrada
-    const cards = document.querySelectorAll('.testimonial-card');
-    cards.forEach((card, i) => {
-      card.style.opacity = '0';
-      card.style.transform = 'scale(0.9)';
-      card.style.transition = 'all 0.5s ease';
-    });
-
-    // Esperar un poco antes de mostrar la nueva tarjeta
-    setTimeout(() => {
-      const currentCard = cards[index];
-      currentCard.style.opacity = '1';
-      currentCard.style.transform = 'scale(1)';
-      currentCard.style.transition = 'all 0.5s ease';
-
-      // Efecto de "parpadeo" con brillo
-      currentCard.style.boxShadow = '0 0 30px rgba(0,212,255,0.8)';
-      setTimeout(() => {
-        currentCard.style.boxShadow = '0 8px 20px rgba(0,0,0,.3)';
-      }, 500);
-    }, 100);
-
-    // Actualizar indicadores
-    indicators.forEach((ind, i) => {
-      ind.classList.toggle('active', i === index);
-    });
-  }
-
-  // Navegación
-  prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
-  nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
-
-  // Clic en indicadores
-  indicators.forEach(ind => {
-    ind.addEventListener('click', () => {
-      const slideIndex = parseInt(ind.dataset.slide);
-      goToSlide(slideIndex);
-    });
+  // Duplicamos los testimonios para crear un bucle infinito sin saltos
+  cards.forEach(card => {
+    const clone = card.cloneNode(true);
+    track.appendChild(clone);
   });
 
-  // Autoplay cada 4 segundos
-  setInterval(() => {
-    goToSlide(currentIndex + 1);
-  }, 4000);
+  let scrollPosition = 0;
+  const speed = 0.8; // Velocidad: aumenta para ir más rápido, disminuye para ir más lento
+
+  function animate() {
+    scrollPosition += speed;
+    if (scrollPosition >= totalWidth) {
+      scrollPosition = 0;
+    }
+    track.style.transform = `translateX(-${scrollPosition}px)`;
+    requestAnimationFrame(animate);
+  }
+
+  // Pausar al hacer hover (opcional, mejora UX)
+  track.addEventListener('mouseenter', () => {
+    speedBackup = speed;
+    speed = 0;
+  });
+
+  track.addEventListener('mouseleave', () => {
+    speed = speedBackup;
+  });
+
+  let speedBackup = speed;
+
+  // Iniciar la animación
+  animate();
+})();
 </script>
 
+<!-- ✅ Soporte táctil AVANZADO: activar efecto al deslizar el dedo -->
+<script>
+(function() {
+  // Solo en dispositivos táctiles
+  if (!('ontouchstart' in window)) return;
+
+  const wrappers = document.querySelectorAll('.wrapper');
+
+  wrappers.forEach(wrapper => {
+    let isTouching = false;
+
+    // Al tocar
+    wrapper.addEventListener('touchstart', function(e) {
+      isTouching = true;
+      this.classList.add('touched');
+    }, { passive: true });
+
+    // Al deslizar
+    wrapper.addEventListener('touchmove', function(e) {
+      if (isTouching) {
+        // Mantener la clase activa mientras se desliza
+        this.classList.add('touched');
+      }
+    }, { passive: true });
+
+    // Al soltar
+    wrapper.addEventListener('touchend', function(e) {
+      isTouching = false;
+      setTimeout(() => {
+        this.classList.remove('touched');
+      }, 300); // Tiempo de transición para que la animación de salida sea suave
+    }, { passive: true });
+
+    // Cancelar si el usuario sale del elemento
+    wrapper.addEventListener('touchcancel', function(e) {
+      isTouching = false;
+      this.classList.remove('touched');
+    }, { passive: true });
+  });
+})();
+</script>
+</script>
 </body>
 </html>
