@@ -512,6 +512,7 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
  <button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>
 
 
+
       <button class="btn ghost" onclick="goHome()">Inicio</button>
       <!-- Botón de carrito en el menú -->
       <button class="btn ghost" onclick="openCart()" style="position:relative;">
@@ -532,8 +533,16 @@ function showFlipbookView() {
   fb.style.display = "block";
   fb.setAttribute("aria-hidden", "false");
 
+   // 👉 CAMBIAR URL SIN RECARGAR
+  history.pushState({}, "", "/promo-navidad");
   window.scrollTo({ top: 0, behavior: "instant" });
 }
+
+  window.addEventListener("DOMContentLoaded", () => {
+  if (window.location.pathname === "/promo-navidad") {
+    showFlipbookView();
+  }
+});
 </script>
 
 
@@ -1251,6 +1260,8 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
       $('#view-planes').style.display='none';
       $('#view-flipbook').style.display='none';
       document.body.scrollTop = document.documentElement.scrollTop = 0;
+      // 👉 RESTAURAR URL PRINCIPAL
+  history.pushState({}, "", "/");
     }
 
     function goToPlans(slug){
