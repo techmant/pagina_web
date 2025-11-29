@@ -538,11 +538,13 @@ function showFlipbookView() {
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
+
   window.addEventListener("DOMContentLoaded", () => {
-  if (window.location.pathname === "/promo-navidad") {
+  if (location.hash === "#/promo-navidad") {
     showFlipbookView();
   }
 });
+
 
 </script>
 
@@ -1494,11 +1496,6 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
   });
 })();
 
-  window.addEventListener("DOMContentLoaded", () => {
-  if (window.location.pathname === "/promo-navidad") {
-    showFlipbookView();
-  }
-});
 
 </script>
 </script>
