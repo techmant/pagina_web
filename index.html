@@ -89,6 +89,8 @@
     /* =============== Página de Planes (SPA) =============== */
     #view-home{display:block}
     #view-planes{display:none}
+    #view-flipbook{display:none}
+    
     .hero-mini{position:relative;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6)), var(--hero-img);background-size:cover;background-position:center;padding:96px 18px 24px}
     .hero-mini .wrap{display:flex;align-items:flex-end;gap:14px}
     .pill{display:inline-flex;align-items:center;gap:8px;padding:.35rem .7rem;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);backdrop-filter:blur(4px);font-size:.9rem}
@@ -507,7 +509,7 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
       </div>
       <div class="spacer"></div>
       <!-- 🔵 Nuevo Botón Probo Navidad -->
-   <button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>
+  <button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>
 
       
       <button class="btn ghost" onclick="goHome()">Inicio</button>
@@ -521,16 +523,23 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
   
 <script>
 function showFlipbookView() {
-  // Oculta todas las vistas
-  document.querySelectorAll("main").forEach(v => v.setAttribute("aria-hidden", "true"));
 
-  // Muestra solo la vista del flipbook
-  document.querySelector("#view-flipbook").setAttribute("aria-hidden", "false");
+  // Ocultar todas las vistas
+  document.querySelectorAll("main").forEach(v => {
+    v.style.display = "none";
+    v.setAttribute("aria-hidden", "true");
+  });
 
-  // Lleva el scroll arriba
+  // Mostrar solo la vista del flipbook
+  const fb = document.querySelector("#view-flipbook");
+  fb.style.display = "block";
+  fb.setAttribute("aria-hidden", "false");
+
+  // Subir al inicio
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 </script>
+
 
   
   <!-- ====================== VISTA: HOME ====================== -->
@@ -755,8 +764,26 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
     </footer>
   </main>
 
-          <!-- ====================== VISTA: FLIPBOOK ====================== -->
-<main id="view-flipbook" aria-hidden="true">
+       
+
+  <section class="wrap" style="padding:20px 0;">
+    <iframe 
+      allowfullscreen="allowfullscreen"
+      allow="clipboard-write"
+      src="https://heyzine.com/flip-book/bc9be83d9b.html"
+      style="border:0;width:100%;height:80vh;border-radius:12px;">
+    </iframe>
+  </section>
+          
+  <footer>
+    <div class="wrap">
+      <div>¿Tienes dudas? Escríbenos por WhatsApp.</div>
+    </div>
+  </footer>
+</main>
+
+<!-- ====================== VISTA: FLIPBOOK ====================== -->
+<main id="view-flipbook" aria-hidden="true" style="display:none;">
   <div class="hero-mini" style="--hero-img:url('https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1400&q=60')">
     <div class="wrap">
       <div>
@@ -779,14 +806,9 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
       style="border:0;width:100%;height:80vh;border-radius:12px;">
     </iframe>
   </section>
-
-  <footer>
-    <div class="wrap">
-      <div>¿Tienes dudas? Escríbenos por WhatsApp.</div>
-    </div>
-  </footer>
 </main>
 
+          
 
   <!-- Modal del Carrito -->
   <div id="cartModal" style="display:none">
