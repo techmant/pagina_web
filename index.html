@@ -534,16 +534,18 @@ function showFlipbookView() {
   fb.setAttribute("aria-hidden", "false");
 
    // 👉 CAMBIAR URL SIN RECARGAR
-  history.pushState({}, "", "/promo-navidad");
+ location.hash = "#/promo-navidad";
+
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
 
-  window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", () => {
   if (location.hash === "#/promo-navidad") {
     showFlipbookView();
   }
 });
+
 
 
 </script>
