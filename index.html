@@ -1267,10 +1267,9 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
   location.hash = "#bono-navidad";
 
   // ocultar todas las vistas
-  document.querySelectorAll("main").forEach(v => {
-    v.style.display = "none";
-    v.setAttribute("aria-hidden", "true");
-  });
+      $('#view-home').style.display='none';
+      $('#view-flipbook').style.display='block';
+      $('#view-planes').style.display='none';
 
   // mostrar flipbook
   const fb = document.getElementById("view-flipbook"); // <-- tu ID
