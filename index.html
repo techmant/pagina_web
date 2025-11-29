@@ -523,33 +523,35 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
   </header>
   
 <script>
-// --- FUNCIONES PRINCIPALES ---
+// Muestra el flipbook y oculta el contenido principal
 function showFlipbookView() {
-  // Oculta todo el contenido principal
   document.querySelectorAll("main").forEach(v => {
     v.style.display = "none";
     v.setAttribute("aria-hidden", "true");
   });
 
-  // Muestra el flipbook
   const fb = document.getElementById("view-flipbook");
   if (fb) {
     fb.style.display = "block";
     fb.setAttribute("aria-hidden", "false");
   }
 
+  // Cambia la URL con hash para que sea compartible
+  if (location.hash !== "#/promo-navidad") {
+    history.pushState(null, "", "#/promo-navidad");
+  }
+
   // Scroll arriba
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
+// Oculta el flipbook y muestra el contenido principal
 function hideFlipbookView() {
-  // Muestra el contenido principal
   document.querySelectorAll("main").forEach(v => {
     v.style.display = "";
     v.setAttribute("aria-hidden", "false");
   });
 
-  // Oculta el flipbook
   const fb = document.getElementById("view-flipbook");
   if (fb) {
     fb.style.display = "none";
@@ -557,7 +559,11 @@ function hideFlipbookView() {
   }
 }
 
-// --- MANEJO DE HASH ---
+// ===============================================
+// MANEJO DE HASH
+// ===============================================
+
+// Esta función se ejecuta cada vez que cambia el hash
 function handleHashChange() {
   if (location.hash === "#/promo-navidad") {
     showFlipbookView();
@@ -565,8 +571,15 @@ function handleHashChange() {
     hideFlipbookView();
   }
 }
-// --- EVENTOS ---
+
+// ===============================================
+// EVENTOS
+// ===============================================
+
+// Al cargar la página, se verifica el hash actual
 window.addEventListener("DOMContentLoaded", handleHashChange);
+
+// Si el hash cambia manualmente, también se maneja
 window.addEventListener("hashchange", handleHashChange);
 
 
