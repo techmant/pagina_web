@@ -509,8 +509,8 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
       </div>
       <div class="spacer"></div>
       <!-- 🔵 Nuevo Botón Probo Navidad -->
-  <!--<button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>-->
-<button onclick="goToPromoNavidad()">Bono Navideño</button>
+  <button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>
+
 
       
       <button class="btn ghost" onclick="goHome()">Inicio</button>
@@ -524,11 +524,10 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
   
 <script>
 function showFlipbookView() {
-  // ocultar todas las vistas <main>
-  document.querySelectorAll("main").forEach(v => {
-    v.style.display = "none";
-    v.setAttribute("aria-hidden", "true");
-  });
+  location.hash = "#bono-navidad";
+  $('#view-home').style.display='none';
+  $('#view-planes').style.display='none';
+  $('#view-flipbook').style.display='block';
   // mostrar la vista flipbook
   const fb = document.getElementById("view-flipbook");
   fb.style.display = "block";
@@ -1263,21 +1262,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
 
-   function goToPromoNavidad() {
-  location.hash = "#bono-navidad";
-
-  // ocultar todas las vistas
-      $('#view-home').style.display='none';
-      $('#view-flipbook').style.display='block';
-      $('#view-planes').style.display='none';
-
-  // mostrar flipbook
-  const fb = document.getElementById("view-flipbook"); // <-- tu ID
-  fb.style.display = "block";
-  fb.setAttribute("aria-hidden", "false");
-
-  window.scrollTo({ top: 0, behavior: "instant" });
-}
+   
 
 
 
