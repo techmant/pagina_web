@@ -571,13 +571,18 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
     // MANEJO DE HASH
     // ===============================================
     function handleHashChange() {
-      if (location.hash === "#/promo-navidad") {
-        showFlipbookView();
-      } else {
-        showMainContent();
-      }
-    }
+  const hash = location.hash;
 
+  if (hash === "#/promo-navidad") {
+    showFlipbookView();
+  } else if (hash.startsWith("#planes/")) {
+    const slug = hash.split('/')[1];
+    goToPlans(slug);
+  } else {
+    // Cualquier otro hash (incluyendo vacío) → home
+    showMainContent(); // ← esto ya llama implícitamente a goHome() visual + URL
+  }
+}
     // ===============================================
     // EVENTOS
     // ===============================================
@@ -1312,14 +1317,20 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
   history.pushState({}, "", "/");
     }
 
-    function goToPlans(slug){
-      location.hash = `#planes/${slug}`;
-      renderPlans(slug);
-      $('#view-home').style.display='none';
-      $('#view-flipbook').style.display='none';
-      $('#view-planes').style.display='block';
-      document.body.scrollTop = document.documentElement.scrollTop = 0;
-    }
+    function goToPlans(slug) {
+  // Renderiza y cambia visual primero
+  renderPlans(slug);
+  $('#view-home').style.display = 'none';
+  $('#view-flipbook').style.display = 'none';
+  $('#view-planes').style.display = 'block';
+  document.body.scrollTop = document.documentElement.scrollTop = 0;
+
+  // Cambia la URL SIN disparar hashchange (evita recursión)
+  const newHash = `#planes/${slug}`;
+  if (location.hash !== newHash) {
+    history.pushState(null, '', newHash);
+  }
+}
 
    
 
@@ -1448,12 +1459,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
     goHome();
   }
 }
-    window.addEventListener('hashchange', ()=>{
-      if(location.hash.startsWith('#planes/')){
-        const slug = location.hash.split('/')[1];
-        goToPlans(slug);
-      } else { goHome(); }
-    });
+    
     init();
   </script>
 
