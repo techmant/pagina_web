@@ -583,9 +583,15 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
     // ===============================================
     window.addEventListener("DOMContentLoaded", handleHashChange);
     window.addEventListener("hashchange", handleHashChange);
+
+  // ✅ Garantizar que el iframe se cargue (re-aplicar src si ya se había descargado)
+  const iframe = document.querySelector('#view-flipbook iframe');
+  if (iframe && !iframe.src) {
+    iframe.src = "https://heyzine.com/flip-book/bc9be83d9b.html";
+  }
   </script>
 
-</script>
+
 
 
 
@@ -1428,17 +1434,20 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
 
     /* Render inicial + Router */
     function init(){
-      document.getElementById('y').textContent = new Date().getFullYear();
-      renderServices();
-      updateCart(); // Inicializa el carrito
+  document.getElementById('y').textContent = new Date().getFullYear();
+  renderServices();
+  updateCart();
 
-      if(location.hash.startsWith('#planes/')){
-        const slug = location.hash.split('/')[1];
-        goToPlans(slug);
-      } else {
-        goHome();
-      }
-    }
+  // 👇 Primero, verifica si es la ruta del flipbook
+  if (location.hash === '#/promo-navidad') {
+    showFlipbookView();
+  } else if (location.hash.startsWith('#planes/')) {
+    const slug = location.hash.split('/')[1];
+    goToPlans(slug);
+  } else {
+    goHome();
+  }
+}
     window.addEventListener('hashchange', ()=>{
       if(location.hash.startsWith('#planes/')){
         const slug = location.hash.split('/')[1];
