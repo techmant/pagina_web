@@ -89,7 +89,7 @@
     /* =============== Página de Planes (SPA) =============== */
     #view-home{display:block}
     #view-planes{display:none}
-    
+    #view-flipbook { display: none; }
     
     .hero-mini{position:relative;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6)), var(--hero-img);background-size:cover;background-position:center;padding:96px 18px 24px}
     .hero-mini .wrap{display:flex;align-items:flex-end;gap:14px}
@@ -523,21 +523,19 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
   
 <script>
 function showFlipbookView() {
-
-  // Ocultar todas las vistas
+  // ocultar todas las vistas <main>
   document.querySelectorAll("main").forEach(v => {
     v.style.display = "none";
     v.setAttribute("aria-hidden", "true");
   });
-
-  // Mostrar solo la vista del flipbook
-  const fb = document.querySelector("#view-flipbook");
+  // mostrar la vista flipbook
+  const fb = document.getElementById("view-flipbook");
   fb.style.display = "block";
   fb.setAttribute("aria-hidden", "false");
-
-  // Subir al inicio
+  // opcional: scroll arriba
   window.scrollTo({ top: 0, behavior: "instant" });
 }
+
 </script>
 
 
