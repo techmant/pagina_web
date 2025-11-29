@@ -543,6 +543,7 @@ function showFlipbookView() {
     showFlipbookView();
   }
 });
+
 </script>
 
 
@@ -1492,7 +1493,15 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
     }, { passive: true });
   });
 })();
+
+  window.addEventListener("DOMContentLoaded", () => {
+  if (window.location.pathname === "/promo-navidad") {
+    showFlipbookView();
+  }
+});
+
 </script>
 </script>
+          
 </body>
 </html>
