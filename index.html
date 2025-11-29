@@ -1249,6 +1249,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
       location.hash = '';
       $('#view-home').style.display='block';
       $('#view-planes').style.display='none';
+      $('#view-flipbook').style.display='none';
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
 
@@ -1256,6 +1257,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
       location.hash = `#planes/${slug}`;
       renderPlans(slug);
       $('#view-home').style.display='none';
+      $('#view-flipbook').style.display='none';
       $('#view-planes').style.display='block';
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
