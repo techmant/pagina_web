@@ -509,7 +509,8 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
       </div>
       <div class="spacer"></div>
       <!-- 🔵 Nuevo Botón Probo Navidad -->
-  <button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>
+  <!--<button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>-->
+<button onclick="goToPromoNavidad()">Bono Navideño</button>
 
       
       <button class="btn ghost" onclick="goHome()">Inicio</button>
@@ -1261,6 +1262,29 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
       $('#view-planes').style.display='block';
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
+
+   function goToPromoNavidad() {
+  location.hash = "#bono-navidad";
+
+  // ocultar todas las vistas
+  document.querySelectorAll("main").forEach(v => {
+    v.style.display = "none";
+    v.setAttribute("aria-hidden", "true");
+  });
+
+  // mostrar flipbook
+  const fb = document.getElementById("showFlipbookView"); // <-- tu ID
+  fb.style.display = "block";
+  fb.setAttribute("aria-hidden", "false");
+
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+
+window.addEventListener('load', ()=>{
+  if(location.hash === '#promo-navidad'){
+    goToPromoNavidad();
+  }
+});
 
     /* =================== NUEVO renderServices() - usa cover + personaje por servicio =================== */
     function renderServices(){
