@@ -565,7 +565,9 @@ function handleHashChange() {
     hideFlipbookView();
   }
 }
-
+// --- EVENTOS ---
+window.addEventListener("DOMContentLoaded", handleHashChange);
+window.addEventListener("hashchange", handleHashChange);
 
 
 
