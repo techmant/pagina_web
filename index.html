@@ -525,9 +525,10 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
 <script>
 function showFlipbookView() {
   location.hash = "#bono-navidad";
-  $('#view-home').style.display='none';
-  $('#view-planes').style.display='none';
-  $('#view-flipbook').style.display='block';
+  document.getElementById("view-home").style.display = "none";
+document.getElementById("view-planes").style.display = "none";
+document.getElementById("view-flipbook").style.display = "block";
+
   // mostrar la vista flipbook
   const fb = document.getElementById("view-flipbook");
   fb.style.display = "block";
