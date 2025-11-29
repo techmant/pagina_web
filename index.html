@@ -13,6 +13,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
+ /* Estilos básicos de ocultar/mostrar */
+    #view-flipbook {
+      display: none;
+    }
+    
     /* =============== Base / Reset =============== */
     *,*::before,*::after{box-sizing:border-box}
     :root{
@@ -524,71 +529,61 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
   
 <script>
 // Muestra el flipbook y oculta el contenido principal
-function showFlipbookView() {
-  document.querySelectorAll("main").forEach(v => {
-    v.style.display = "none";
-    v.setAttribute("aria-hidden", "true");
-  });
+ function showFlipbookView() {
+      document.querySelectorAll("main").forEach(v => {
+        v.style.display = "none";
+        v.setAttribute("aria-hidden", "true");
+      });
 
-  const fb = document.getElementById("view-flipbook");
-  if (fb) {
-    fb.style.display = "block";
-    fb.setAttribute("aria-hidden", "false");
-  }
+      const fb = document.getElementById("view-flipbook");
+      if (fb) {
+        fb.style.display = "block";
+        fb.setAttribute("aria-hidden", "false");
+      }
 
-  // Cambia la URL con hash para que sea compartible
-  if (location.hash !== "#/promo-navidad") {
-    history.pushState(null, "", "#/promo-navidad");
-  }
+      // Cambia la URL con hash para compartir
+      if (location.hash !== "#/promo-navidad") {
+        history.pushState(null, "", "#/promo-navidad");
+      }
 
-  window.scrollTo({ top: 0, behavior: "instant" });
-}
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
 
-// Oculta el flipbook y muestra el contenido principal
-// Esta función solo se ejecuta si el usuario quiere ir al inicio
-function showMainContent() {
-  document.querySelectorAll("main").forEach(v => {
-    v.style.display = "";
-    v.setAttribute("aria-hidden", "false");
-  });
+    function showMainContent() {
+      document.querySelectorAll("main").forEach(v => {
+        v.style.display = "";
+        v.setAttribute("aria-hidden", "false");
+      });
 
-  const fb = document.getElementById("view-flipbook");
-  if (fb) {
-    fb.style.display = "none";
-    fb.setAttribute("aria-hidden", "true");
-  }
+      const fb = document.getElementById("view-flipbook");
+      if (fb) {
+        fb.style.display = "none";
+        fb.setAttribute("aria-hidden", "true");
+      }
 
-  // Cambia el hash al inicio
-  if (location.hash !== "") {
-    history.pushState(null, "", "/");
-  }
-}
+      // Cambia el hash al inicio
+      if (location.hash !== "") {
+        history.pushState(null, "", "/");
+      }
+    }
 
-// ===============================================
-// MANEJO DE HASH
-// ===============================================
+    // ===============================================
+    // MANEJO DE HASH
+    // ===============================================
+    function handleHashChange() {
+      if (location.hash === "#/promo-navidad") {
+        showFlipbookView();
+      } else {
+        showMainContent();
+      }
+    }
 
-function handleHashChange() {
-  // Si la URL tiene #/promo-navidad, siempre mostramos el flipbook
-  if (location.hash === "#/promo-navidad") {
-    showFlipbookView();
-  } 
-  // Solo si el hash está vacío o distinto, mostramos contenido principal
-  else {
-    showMainContent();
-  }
-}
-
-// ===============================================
-// EVENTOS
-// ===============================================
-
-// Detecta carga de página
-window.addEventListener("DOMContentLoaded", handleHashChange);
-
-// Detecta cambios de hash manuales
-window.addEventListener("hashchange", handleHashChange);
-
+    // ===============================================
+    // EVENTOS
+    // ===============================================
+    window.addEventListener("DOMContentLoaded", handleHashChange);
+    window.addEventListener("hashchange", handleHashChange);
+  </script>
 
 </script>
 
