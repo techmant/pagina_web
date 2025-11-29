@@ -509,10 +509,9 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
       </div>
       <div class="spacer"></div>
       <!-- 🔵 Nuevo Botón Probo Navidad -->
-  <button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>
+ <button class="btn ghost" onclick="showFlipbookView()">Promo Navidad</button>
 
 
-      
       <button class="btn ghost" onclick="goHome()">Inicio</button>
       <!-- Botón de carrito en el menú -->
       <button class="btn ghost" onclick="openCart()" style="position:relative;">
@@ -524,20 +523,19 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
   
 <script>
 function showFlipbookView() {
-  location.hash = "#bono-navidad";
-  document.getElementById("view-home").style.display = "none";
-document.getElementById("view-planes").style.display = "none";
-document.getElementById("view-flipbook").style.display = "block";
+  document.querySelectorAll("main").forEach(v => {
+    v.style.display = "none";
+    v.setAttribute("aria-hidden", "true");
+  });
 
-  // mostrar la vista flipbook
   const fb = document.getElementById("view-flipbook");
   fb.style.display = "block";
   fb.setAttribute("aria-hidden", "false");
-  // opcional: scroll arriba
+
   window.scrollTo({ top: 0, behavior: "instant" });
 }
-
 </script>
+
 
 
   
@@ -788,6 +786,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
     </iframe>
   </section>
 </main>
+
 
 
   <!-- Modal del Carrito -->
