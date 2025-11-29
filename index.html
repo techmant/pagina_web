@@ -507,8 +507,8 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
       </div>
       <div class="spacer"></div>
       <!-- 🔵 Nuevo Botón Probo Navidad -->
-   <button class="btn ghost" onclick="showFlipbook()">Promo Navidad</button>
-
+   <button class="btn ghost" onclick="openFlipbook()">Promo Navidad</button>
+      
       <button class="btn ghost" onclick="goHome()">Inicio</button>
       <!-- Botón de carrito en el menú -->
       <button class="btn ghost" onclick="openCart()" style="position:relative;">
@@ -519,10 +519,8 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
   </header>
   
 <script>
-function showFlipbook() {
-  document.querySelector("#flipbookSection").scrollIntoView({
-    behavior: "smooth"
-  });
+function openFlipbook() {
+  window.open("https://techmants.blog/promo-navidad.html", "_blank");
 }
 </script>
   
