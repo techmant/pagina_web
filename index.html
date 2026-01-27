@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TechmanTS – Streaming y Servicios Digitales</title>
-  <meta name="description" content="TechmanTS: venta de cuentas de entretenimiento y servicios digitales. Netflix, Max (HBO), Disney+, Prime Video, Crunchyroll, YouTube, Spotify, FlujoTV y más." />
+  <meta name="description" content="TechmanTS: venta de cuentas de entretenimiento y servicios digitales. Netflix, Max (HBO), Disney+, Prime Video, Crunchyroll, YouTube, Spotify, TV_Digital y más." />
   <meta name="theme-color" content="#0d0d0d" />
   <!-- ✅ Favicon -->
   <link rel="icon" href="https://i.imgur.com/f2J3Eqn.jpeg" sizes="any">
@@ -1349,7 +1349,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
       }
     };
 
-    const ORDER = ['netflix','prime','max','disney','crunchy','youtube','spotify','paramount','vix','flujotv','apple','office'];
+    const ORDER = ['netflix','prime','max','disney','crunchy','youtube','spotify','paramount','vix','TV_Digital','apple','office'];
 
     /* =================== Utilidades =================== */
     const $ = (q, ctx=document) => ctx.querySelector(q);
@@ -1488,7 +1488,7 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
     })();
 
     /* Dinámico: texto del hero */
-    const platforms = ["Netflix","Prime Video","Max","Disney+","Crunchyroll","YouTube Premium","Spotify Premium","FlujoTV"];
+    const platforms = ["Netflix","Prime Video","Max","Disney+","Crunchyroll","YouTube Premium","Spotify Premium","TV_Digital"];
     const elPlat = document.getElementById('platform');
     let idx = 0;
     setInterval(()=>{ if(elPlat) elPlat.textContent = platforms[idx]; idx = (idx+1)%platforms.length; }, 2600);
