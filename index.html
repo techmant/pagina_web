@@ -618,11 +618,11 @@ a, button, .btn, .btn-ver-planes, .wrapper, .floating-btn {
         </div>  -->
 
 <div class="hero-video">
-  <video autoplay muted loop playsinline preload="auto">
+  <video autoplay muted loop playsinline preload="metadata">
     <source src="https://i.imgur.com/nZEQmbs.mp4" type="video/mp4">
-    Tu navegador no soporta video HTML5.
   </video>
 </div>
+
 
         
         <p class="tagline">Tu tienda online ofrece <span class="dynamic" id="platform">Netflix</span> y más cuentas de entretenimiento para disfrutar en familia.</p>
@@ -970,11 +970,12 @@ document.getElementById('backToTop')?.addEventListener('click', function(e) {
   pointer-events: none; /* Evita que interfiera con el clic del botón */
 }
 
-   .hero-video {
-  max-width: 420px;
-  margin: 0 auto 20px auto;
+.hero-video {
+  max-width: 360px;
+  margin: 0 auto 25px auto;
+  display: flex;
+  justify-content: center;
 }
-
 
   </style>
 
