@@ -662,10 +662,11 @@ Comprar Netflix Premium Ecuador | TechmanTS Streaming
         fb.style.display = "none";
         fb.setAttribute("aria-hidden", "true");
       }
-
-      if (location.hash !== "") {
-        history.pushState(null, "", "/");
-      }
+      
+      const home = document.getElementById('view-home');
+      const planes = document.getElementById('view-planes');
+      if (home) home.style.display = 'block';
+      if (planes) planes.style.display = 'none';
     }
 
     function handleHashChange() {
@@ -695,8 +696,8 @@ Comprar Netflix Premium Ecuador | TechmanTS Streaming
     <!-- ====================== SECCIÓN HERO CON EFECTO SCROLL / TOUCH ====================== -->
     <section class="hero-scroll-container" id="video-scroll-section">
       <div class="sticky-viewport">
-        <!-- Imagen inicial por defecto -->
-        <img id="scroll-video-frame" src="/pagina_web/frames/frame_001.png" alt="Animación Scroll 3D" />
+        <!-- Imagen inicial por defecto corregida para mostrar la sección uno sin errores -->
+        <img id="scroll-video-frame" src="frames/frame_001.png" alt="Animación Scroll 3D" />
       </div>
     </section>
 
@@ -1004,8 +1005,12 @@ Comprar Netflix Premium Ecuador | TechmanTS Streaming
       for (let i = 1; i <= totalFrames; i++) {
         const img = new Image();
         const paddedIndex = String(i).padStart(3, '0');
-        img.src = `/pagina_web/frames/frame_${paddedIndex}.png`;
+        img.src = `frames/frame_${paddedIndex}.png`;
         frames.push(img);
+      }
+
+      if (frames[0] && frames[0].src) {
+        frameImage.src = frames[0].src;
       }
 
       gsap.registerPlugin(ScrollTrigger);
